@@ -1,13 +1,20 @@
 package SpringSecurity.SpringSecurity.dto;
 
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 // Serializable se usa ya que estos datos van a viajar a traves del protocolo http
 public class SaveProductDTO implements Serializable {
 
+    @NotBlank
     private String nombre;
+    @DecimalMin(value = "0.01")
     private BigDecimal price;
+    @Min(value = 1)
     private Long CategoryId;
 
     public BigDecimal getPrice() {

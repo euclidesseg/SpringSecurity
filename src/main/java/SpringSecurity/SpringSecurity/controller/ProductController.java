@@ -52,7 +52,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> findOneById(@RequestBody @Valid SaveProductDTO saveProductDTO){
+    public ResponseEntity<Product> createOne(@RequestBody @Valid SaveProductDTO saveProductDTO){
         Product product = productService.createOne(saveProductDTO);
         // Cuando se guarda un producto nunca devuelve null si falla solo lanza una excepcion
 

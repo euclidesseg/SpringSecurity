@@ -2,6 +2,8 @@ package SpringSecurity.SpringSecurity.persistance.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "product")
 public class Product {
@@ -15,10 +17,15 @@ public class Product {
     private Long id;
 
     private String nombre;
-    private String BigDecinal; //# accedida solo a traves de la clase producto
+    private BigDecimal price;
 
+    //# accedida solo a traves de la clase producto
     @Enumerated(EnumType.STRING) // para guardar un valor de string en vez de el valor numerico ordinal
     private ProductStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     public static enum ProductStatus{
         ENABLED,DISABLED
@@ -41,12 +48,12 @@ public class Product {
         this.nombre = nombre;
     }
 
-    public String getBigDecinal() {
-        return BigDecinal;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setBigDecinal(String bigDecinal) {
-        BigDecinal = bigDecinal;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public ProductStatus getStatus() {
