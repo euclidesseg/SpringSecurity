@@ -1,4 +1,64 @@
 package SpringSecurity.SpringSecurity.persistance.entity;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "product")
 public class Product {
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // que se genere automáticamente y que se autoincremente
+    @Column(unique = true, nullable = false)
+    // que sea único y que no sea nulo
+    private Long id;
+
+    private String nombre;
+    private String BigDecinal; //# accedida solo a traves de la clase producto
+
+    @Enumerated(EnumType.STRING) // para guardar un valor de string en vez de el valor numerico ordinal
+    private ProductStatus status;
+
+    public static enum ProductStatus{
+        ENABLED,DISABLED
+    }
+
+    // Getter - Setter
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getBigDecinal() {
+        return BigDecinal;
+    }
+
+    public void setBigDecinal(String bigDecinal) {
+        BigDecinal = bigDecinal;
+    }
+
+    public ProductStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ProductStatus status) {
+        this.status = status;
+    }
 }
+//** ENUm
+//#  En Java, los enums (enumerations) son tipos de datos especiales que permiten definir un conjunto fijo de constantes con nombre.
+//#  Esto hace que el código sea más legible, mantenible y menos propenso a errores
+//... Los enum en java siempre representan un valor ordinal que comuenza por 0, 1, 2
+//...
