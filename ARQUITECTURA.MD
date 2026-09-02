@@ -16,7 +16,7 @@ Spring security se debe incorporar a lo siclos de vida de Jakarta y lo hace a tr
 
 ## FilterChainProxy (coordinar la cadena de filtros de seguridad)
 
-> Cordina la cadena de filtros para la seguridad en Spring Security basada en peticiones `GET`, `PUT` o `DELETE`.
+> Cordina la o las cadenas de filtros para la seguridad en Spring Security basada en peticiones `GET`, `PUT` o `DELETE`.
 > Indica que filtros se deben ejecutar y en que orden.
 > Puede administrar una cadena de filtros o más cadenas de filtro.
 
@@ -108,3 +108,125 @@ Spring security se debe incorporar a lo siclos de vida de Jakarta y lo hace a tr
 # PasswordEncoder
 
 > Es una interfaz que se usa para codificar y verficar las contraseas, su proposito principal es proteger las contraseñas de los usuarios.
+
+```text
+                    PETICIÓN HTTP
+                         │
+                         ▼
+              ┌──────────────────────┐
+              │   Jakarta Servlet    │
+              │   Filter Chain       │
+              └──────────┬───────────┘
+                         │
+                         ▼
+              ┌──────────────────────┐
+              │ DelegationFilterProxy│
+              │                      │
+              │ Puente entre         │
+              │ Servlet y Spring     │
+              └──────────┬───────────┘
+                         │
+                         ▼
+              ┌──────────────────────┐
+              │   FilterChainProxy   │
+              │                      │
+              │ Coordina una o varias│
+              │ SecurityFilterChain  │
+              └──────────┬───────────┘
+                         │
+                selecciona la cadena
+                correspondiente
+                         │
+                         ▼
+              ┌──────────────────────┐
+              │ SecurityFilterChain  │
+              │                      │
+              │ [Filter 1]           │
+              │ [Filter 2]           │
+              │ [Filter 3]           │
+              │ [Filter ...]         │
+              └──────────┬───────────┘
+                         │
+                         │
+              ┌──────────▼───────────┐
+              │ AuthenticationManager│
+              │                      │
+              │ authenticate(...)    │
+              └──────────┬───────────┘
+                         │
+                         ▼
+              ┌──────────────────────┐
+              │   ProviderManager    │
+              │                      │
+              │ Administrador de     │
+              │ AuthenticationProvider│
+              └──────────┬───────────┘
+                         │
+              ┌──────────┼───────────┐
+              │          │           │
+              ▼          ▼           ▼
+        ┌──────────┐ ┌──────────┐ ┌──────────┐
+        │Provider 1│ │Provider 2│ │Provider 3│
+        │          │ │          │ │          │
+        │Database  │ │  Google  │ │ Facebook │
+        └────┬─────┘ └──────────┘ └──────────┘
+             │
+             │ si usa usuario/contraseña
+             ▼
+      ┌───────────────────┐
+      │ UserDetailsService│
+      │                   │
+      │ Carga el usuario  │
+      │ desde una fuente  │
+      │ de datos          │
+      └─────────┬─────────┘
+                │
+                ▼
+      ┌───────────────────┐
+      │    Base de datos  │
+      │                   │
+      │ usuario           │
+      │ password          │
+      │ roles/permisos    │
+      └───────────────────┘
+                │
+                ▼
+      ┌───────────────────┐
+      │   PasswordEncoder │
+      │                   │
+      │ Verifica password │
+      └─────────┬─────────┘
+                │
+                │ autenticación correcta
+                ▼
+      ┌────────────────────────────┐
+      │       Authentication       │
+      │                            │
+      │ principal                  │
+      │ credentials                │
+      │ authorities                │
+      └─────────────┬──────────────┘
+                    │
+                    ▼
+      ┌────────────────────────────┐
+      │      SecurityContext       │
+      │                            │
+      │ Authentication             │
+      │ ├── Principal              │
+      │ ├── Credentials            │
+      │ └── GrantedAuthority       │
+      └─────────────┬──────────────┘
+                    │
+                    ▼
+      ┌────────────────────────────┐
+      │    SecurityContextHolder   │
+      │                            │
+      │ Mantiene/accede al         │
+      │ SecurityContext actual     │
+      └─────────────┬──────────────┘
+                    │
+                    ▼
+             PETICIÓN AUTORIZADA
+                    │
+                    ▼
+              Controller / API

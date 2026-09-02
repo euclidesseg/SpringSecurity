@@ -31,3 +31,13 @@ http://localhost:4001/api/v1/products?p=0&limit=5
 ```
 
 > `default-page-size` se utiliza cuando no se especifica el tamaño (`size`/`limit`) en la petición.
+### `@RestController` vs `@RestControllerAdvice`
+
+- `@RestController` → Maneja peticiones HTTP y devuelve datos, normalmente en JSON.
+- `@RestControllerAdvice` → Maneja excepciones y respuestas de error de forma global.
+-  En resumen: **`@RestController` maneja peticiones; `@RestControllerAdvice` maneja errores en las peticiones.**
+### `ObjectNotFoundException` vs `GlobalExceptionHandler`
+
+`ObjectNotFoundException` → Representa y **lanza el error** cuando no se encuentra un objeto.
+
+`GlobalExceptionHandler` → **Captura la excepción** y la transforma en una respuesta HTTP para el cliente.

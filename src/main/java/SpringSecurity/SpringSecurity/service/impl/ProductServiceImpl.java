@@ -1,11 +1,13 @@
 package SpringSecurity.SpringSecurity.service.impl;
 
 import SpringSecurity.SpringSecurity.dto.SaveProductDTO;
+import SpringSecurity.SpringSecurity.exception.ObjectNotFoundException;
 import SpringSecurity.SpringSecurity.persistance.entity.Category;
 import SpringSecurity.SpringSecurity.persistance.entity.Product;
 import SpringSecurity.SpringSecurity.persistance.repository.IProductRepository;
 import SpringSecurity.SpringSecurity.service.IProductService;
 import SpringSecurity.SpringSecurity.interfacesimpl.SupplierImpl;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,9 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public Product createOne(SaveProductDTO saveProductDTO) {
+    // este servicio solo me recive un DTO Objeto de transferencia de datos ya
+    // que DTO contiene los datos que necesito para guardar un producto
+    public Product createOne(@Valid  SaveProductDTO saveProductDTO) {
         Product newProduct = new Product();
         newProduct.setPrice(saveProductDTO.getPrice());
         newProduct.setName(saveProductDTO.getName());
@@ -61,7 +65,7 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public Product disableOneById(Long productId) {
 
-        Product productFromDB = productRepository.findById(productId).orElseThrow();
+        Product productFromDB = productRepository.findById(productId).orElseThrow(() -> new ObjectNotFoundException("Product not found with id" + productId));
         productFromDB.setStatus(Product.ProductStatus.DISABLED);
         return productRepository.save(productFromDB);
     }
