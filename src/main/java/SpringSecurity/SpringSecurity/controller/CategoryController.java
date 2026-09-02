@@ -3,6 +3,7 @@ package SpringSecurity.SpringSecurity.controller;
 import SpringSecurity.SpringSecurity.dto.SaveCategoryDTO;
 import SpringSecurity.SpringSecurity.persistance.entity.Category;
 import SpringSecurity.SpringSecurity.service.ICategoryService;
+import SpringSecurity.SpringSecurity.service.impl.CategoryServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +18,8 @@ import java.util.Optional;
 public class CategoryController {
 
 
-    private ICategoryService categoryService;
-    public CategoryController(ICategoryService categoryService){
+    public CategoryServiceImpl categoryService;
+    public CategoryController(CategoryServiceImpl categoryService){
         this.categoryService = categoryService;
     }
 
@@ -35,7 +36,7 @@ public class CategoryController {
 
 
     @GetMapping("/{categoryId}")
-    public ResponseEntity<Category> findOneById(@PathVariable long categoryId){
+    public ResponseEntity<Category> findOneById(@PathVariable Long categoryId){
         Optional<Category> category = categoryService.findOneById(categoryId);
         if (category.isPresent()){
             return ResponseEntity.ok(category.get());

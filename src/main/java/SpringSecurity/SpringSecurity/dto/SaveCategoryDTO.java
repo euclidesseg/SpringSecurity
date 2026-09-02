@@ -8,13 +8,13 @@ public class SaveCategoryDTO implements Serializable {
 
     // @NotBlank validará que este atributo no venga con un valor vacío.
     @NotBlank
-    private String nombre;
+    private String name;
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 }

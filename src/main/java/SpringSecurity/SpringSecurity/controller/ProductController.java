@@ -3,6 +3,7 @@ package SpringSecurity.SpringSecurity.controller;
 import SpringSecurity.SpringSecurity.dto.SaveProductDTO;
 import SpringSecurity.SpringSecurity.persistance.entity.Product;
 import SpringSecurity.SpringSecurity.service.IProductService;
+import SpringSecurity.SpringSecurity.service.impl.ProductServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +18,8 @@ import java.util.Optional;
 public class ProductController {
 
 
-    private IProductService productService;
-    public ProductController(IProductService productService){
+    private ProductServiceImpl productService;
+    public ProductController(ProductServiceImpl productService){
         this.productService = productService;
     }
 
@@ -43,7 +44,7 @@ public class ProductController {
 
 
     @GetMapping("/{productId}")
-    public ResponseEntity<Product> findOneById(@PathVariable long productId){
+    public ResponseEntity<Product> findOneById(@PathVariable Long productId){
         Optional<Product> product = productService.findOneById(productId);
         if (product.isPresent()){
             return ResponseEntity.ok(product.get());

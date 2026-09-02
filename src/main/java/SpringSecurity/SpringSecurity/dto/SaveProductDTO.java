@@ -11,11 +11,11 @@ import java.math.BigDecimal;
 public class SaveProductDTO implements Serializable {
 
     @NotBlank
-    private String nombre;
+    private String name;
     @DecimalMin(value = "0.01")
     private BigDecimal price;
     @Min(value = 1)
-    private Long CategoryId;
+    private Long categoryId;
 
     public BigDecimal getPrice() {
         return price;
@@ -26,18 +26,18 @@ public class SaveProductDTO implements Serializable {
     }
 
     public Long getCategoryId() {
-        return CategoryId;
+        return categoryId;
     }
 
     public void setCategoryId(Long categoryId) {
-        CategoryId = categoryId;
+        this.categoryId = categoryId;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 }

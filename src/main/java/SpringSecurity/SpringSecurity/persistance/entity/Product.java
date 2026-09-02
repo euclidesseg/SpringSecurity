@@ -16,7 +16,7 @@ public class Product {
     // que sea único y que no sea nulo
     private Long id;
 
-    private String nombre;
+    private String name;
     private BigDecimal price;
 
     //# accedida solo a traves de la clase producto
@@ -31,6 +31,14 @@ public class Product {
         ENABLED,DISABLED
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     // Getter - Setter
     public Long getId() {
         return id;
@@ -40,12 +48,12 @@ public class Product {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public BigDecimal getPrice() {
@@ -67,5 +75,5 @@ public class Product {
 //** ENUm
 //#  En Java, los enums (enumerations) son tipos de datos especiales que permiten definir un conjunto fijo de constantes con nombre.
 //#  Esto hace que el código sea más legible, mantenible y menos propenso a errores
-//... Los enum en java siempre representan un valor ordinal que comuenza por 0, 1, 2
+//... Los enum en java siempre representan un valor ordinal que comienza por 0, 1, 2
 //...

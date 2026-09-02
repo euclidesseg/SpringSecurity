@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface IProductService {
     Page<Product> findAll(Pageable pageable);
 
-    Optional<Product> findOneById(long productId);
+    Optional<Product> findOneById(Long productId);
 
     Product createOne (SaveProductDTO saveProductDTO);
 

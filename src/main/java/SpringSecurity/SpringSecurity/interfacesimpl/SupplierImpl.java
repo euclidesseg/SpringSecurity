@@ -6,8 +6,8 @@ import java.util.function.Supplier;
 
 public class SupplierImpl implements Supplier<ObjectNotFoundException> {
 
-    private long productId;
-    public  SupplierImpl(long productId){
+    private Long productId;
+    public  SupplierImpl(Long productId){
         this.productId = productId;
     }
     @Override

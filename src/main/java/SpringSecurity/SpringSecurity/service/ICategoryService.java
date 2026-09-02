@@ -10,11 +10,11 @@ import java.util.Optional;
 public interface ICategoryService {
     Page<Category> findAll(Pageable pageable);
 
-    Optional<Category> findOneById(long categoryId);
+    Optional<Category> findOneById(Long categoryId);
 
     Category createOne(SaveCategoryDTO saveCategoryDTO);
 
-    Category updateOneById(Long productId, SaveCategoryDTO saveCategoryDTO);
+    Category updateOneById(Long categoryId, SaveCategoryDTO saveCategoryDTO);
 
     Category disableOneById(Long categoryId);
 }

@@ -26,7 +26,7 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public Optional<Product> findOneById(long productId) {
+    public Optional<Product> findOneById(Long productId) {
         return productRepository.findById(productId);
     }
 
@@ -34,12 +34,13 @@ public class ProductServiceImpl implements IProductService {
     public Product createOne(SaveProductDTO saveProductDTO) {
         Product newProduct = new Product();
         newProduct.setPrice(saveProductDTO.getPrice());
-        newProduct.setNombre(saveProductDTO.getNombre());
+        newProduct.setName(saveProductDTO.getName());
         newProduct.setStatus(Product.ProductStatus.ENABLED);
 
         // asignar categoria primero
         Category category = new Category() ;
         category.setId(saveProductDTO.getCategoryId());
+        newProduct.setCategory(category);
         // en el saveproduct viene un categoryId que se va a relacionar solo si ya existe en la base de datos
         return productRepository.save(newProduct);
     }
@@ -49,7 +50,7 @@ public class ProductServiceImpl implements IProductService {
         SupplierImpl supplier = new SupplierImpl(productId);
         Product productFromDB = productRepository.findById(productId).orElseThrow(supplier);
         productFromDB.setPrice(saveProductDTO.getPrice());
-        productFromDB.setNombre(saveProductDTO.getNombre());
+        productFromDB.setName(saveProductDTO.getName());
         // asignar categoria primero
         Category category = new Category() ;
         category.setId(saveProductDTO.getCategoryId());
