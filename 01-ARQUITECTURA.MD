@@ -63,41 +63,69 @@ Spring security se debe incorporar a lo siclos de vida de Jakarta y lo hace a tr
 
 ---
 
-# AuthenticationManager y AuthenticationConfiguration
-
-## AuthenticationManager
-
-> Es una interfaz clave en el marco de Spring Security que se utiliza para autenticar a los usuarios en una aplicación.
-> Es el componente central responsable de coordinar y administrar el proceso de autenticación.
-> Solo contiene un unico metodo `authenticate`.
-
----
+# AuthenticationConfiguration y AuthenticationManager
 
 ## AuthenticationConfiguration
 
-> Nos ayuda a tunear o hacer una creacion mas especifica de `AuthenticationManager`, rara vez se utiliza.
+> **Configuración de autenticación:** proporciona el `AuthenticationManager` que Spring Security ha configurado para la aplicación.  
+> Permite obtener o personalizar el `AuthenticationManager` cuando necesitamos una configuración más específica.
 
 ---
 
-# ProviderManager
+## AuthenticationManager
 
-> Es la implementacion mas comun de la interfaz `AuthenticationManager`, es el componente sentral responsable de la autenticacion y delegar la responsabilidad de autenticacion a los proveedores adecuados.
+> **Administrador de autenticaciones:** es la interfaz central que administra el proceso de autenticación y expone el método `authenticate()`.  
+> Recibe un objeto `Authentication` y delega la autenticación al componente encargado de realizarla.
 
-> Actua como administrador de proveedores de autenticacion delega la responsavilidad porque pueden a ver muchas estrategias de login que puede ser con usuario y contraseña o con Facebook Google entre otros.
+---
+
+## authenticate
+
+> Es el método de `AuthenticationManager` que recibe un objeto `Authentication` con las credenciales y demás información necesaria para autenticar al usuario.  
+> Si la autenticación es correcta, devuelve un `Authentication` autenticado; si falla, lanza una excepción.
 
 ---
 
-# AuthenticationProvider
+## ProviderManager
 
-### Estrategias de autenticacion
-
-> Es una interfaz que define el contrato para un proveedor de autenticación.
-
-> Es una pirza clave del mecanismo de autenticacion en Spring Security ya que permite personalizar como se autentica a los usuarios en el sistema.
-
-> Son las estrategias que el `ProviderManager` va a utilizar segun el tipo de autenticacion que haré.
+> **Administrador de proveedores:** es la implementación más común de `AuthenticationManager` y también implementa su método `authenticate()`.  
+> Coordina uno o varios `AuthenticationProvider` y delega la autenticación al proveedor adecuado según el tipo de autenticación.
 
 ---
+
+## AuthenticationProvider
+
+### Estrategias de autenticación
+
+> **Proveedor de autenticación:** es una interfaz que define el contrato que debe cumplir un componente capaz de realizar una estrategia concreta de autenticación.  
+> `ProviderManager` utiliza uno o varios `AuthenticationProvider`, por ejemplo para usuario/contraseña, google, facebok, etc.
+
+---
+
+# Diagrama mental
+
+```text
+AuthenticationConfiguration
+        │
+        │ proporciona
+        ▼
+AuthenticationManager
+"Administrador de autenticaciones"
+        │
+        │ authenticate()
+        ▼
+ProviderManager
+"Administrador de proveedores"
+        │
+        │ delega en
+        ▼
+AuthenticationProvider
+"Proveedor de autenticación"
+        │
+        ├── Usuario / contraseña
+        ├── LDAP
+        ├── OAuth
+        └── etc.
 
 # UserDetailsService
 
