@@ -20,9 +20,10 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     private Long id;
 
+    @Column(unique = true)
     private String username;
 
-    private String nombre;
+    private String name;
 
     private String password;
 
@@ -42,15 +43,15 @@ public class User implements UserDetails {
         this.username = username;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
     public Role getRole(){
         return this.role;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setPassword(String password) {
@@ -83,12 +84,12 @@ public class User implements UserDetails {
 
     @Override
     public @Nullable String getPassword() {
-        return "";
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return this.username;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package SpringSecurity.SpringSecurity.config.security;
 
+import SpringSecurity.SpringSecurity.exception.ObjectNotFoundException;
+import SpringSecurity.SpringSecurity.persistance.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityBeansInjector {
 
     @Autowired
+    private IUserRepository userRepository;
+    @Autowired
     /* esta clase AuthenticationConfiguration ya es proveída por spring security también podria inyectarlo directamente en los
      * parametros del metodo authenticationManager nos proporciona una implementación más específica del AuthenticationManager(administrador de autenticaciones)
     */
@@ -32,9 +36,9 @@ public class SecurityBeansInjector {
     @Bean
     // Estrategia de authenticación
     public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider authenticationStrategy = new DaoAuthenticationProvider(); // necesita un password encoder porque las contraseñas estarán encriptadas
-        authenticationStrategy.setPasswordEncoder(null); // necesita un codificador de contraseñas para comparar cuando se inicia sicion
-        authenticationStrategy.setUserDetailsService(null);
+        DaoAuthenticationProvider authenticationStrategy = new DaoAuthenticationProvider(userDetailsService());
+        // DaoAuthenticationProvider necesita un password encoder porque las contraseñas estarán encriptadas
+        authenticationStrategy.setPasswordEncoder(passwordEncoder()); // necesita un codificador de contraseñas para comparar cuando se inicia sicion
         return authenticationStrategy;
     }
 
@@ -45,8 +49,8 @@ public class SecurityBeansInjector {
 
     @Bean
     UserDetailsService userDetailsService (){
-        return (username) -> {
-            return null;
+        return (String username) -> {
+            return userRepository.findByUsername(username).orElseThrow(() -> new ObjectNotFoundException("Username not fount with user " + username));
         };
     }
 }
