@@ -2,10 +2,6 @@
 
 >`https://docs.spring.io/spring-security/reference/servlet/architecture.html`
 
->`https://www.jwt.io/`
-
->`https://www.base64decode.org/`
-
 Spring security se debe incorporar a lo siclos de vida de Jakarta y lo hace a traves del metodo:
 
 ## DelegationFilterProxy (integrar siclos de vida de jakarta servlet y spring boot)

@@ -57,6 +57,8 @@ public class AuthenticationService {
         extraClaims.put("role", user.getRole().name());
         extraClaims.put("authorities", user.getAuthorities());
         return extraClaims;
+        // Si quisiera podría agregar tantos claims aquí como fueran necesario
+        // ejemplo extraClaims.put("isPremium", user.getIsPremium());
     }
 
     public AuthenticationResponseDTO login(AuthenticationRequestDTO authenticationRequestDTO) {
@@ -67,7 +69,8 @@ public class AuthenticationService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(authenticationRequestDTO.getUsername(),authenticationRequestDTO.getPassword()
         );
         // este objeto administrador va a buscar un metodo que le resuelva esta authenticación
-        //  y será DaoAuthenticationProvider el cual ya configuraromos tambien en SecurityBeansInjector
+        // y será DaoAuthenticationProvider el cual ya configuraromos tambien en SecurityBeansInjector
+        // y pro eso se llama administrasion de authenticacaion porque recibe el authenticadorauthentication y lo administra
         authenticationManager.authenticate(authentication); // se hacen validaciones
 
 

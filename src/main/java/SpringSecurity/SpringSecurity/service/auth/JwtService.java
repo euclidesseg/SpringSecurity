@@ -36,7 +36,7 @@ public class JwtService {
                 // == pyload
                 .claims(extraClaims)
                 .subject(user.getUsername())
-                .issuedAt(issueDat) // fecha de emision en milisegundos
+                .issuedAt(issueDat) // fecha de emission en milisegundos
                 .expiration(expirationInSecondsDate) // fecha de expiracion en milisegundos
                 // === firma
                 .signWith(generateKey(), Jwts.SIG.HS256) // yo

@@ -1,3 +1,8 @@
+
+>`https://www.jwt.io/`
+
+>`https://www.base64decode.org/`
+
 # JWT
 
 > **JWT (JSON Web Token)** es un estándar abierto (RFC 7519) que define un formato compacto y autenticado
