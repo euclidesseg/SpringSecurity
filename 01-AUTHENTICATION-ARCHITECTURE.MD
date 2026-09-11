@@ -254,3 +254,21 @@ AuthenticationProvider
                     │
                     ▼
               Controller / API
+
+```
+# JwtAuthenticationFilters
+
+```text
+Es un filtro que tiene la responsabilidad de interceptar una petición, buscar el JWT que viene en ella, validarlo y, 
+si es válido, establecer al usuario autenticado en el contexto de seguridad de Spring.
+para nosotros estaremos usando mas que nada el OncePerRequestFilter
+```
+
+# OncePerRequestFilter
+```text
+OncePerRequestFilter es una clase abstracta de spring security que simplifica la creación de filtros personalizados
+para procesar peticiones.
+
+Este filtro nos ayuda a mantener un filtro de una sola vez por petición, esto quiere decir que se evaluan las peticioens duplicadas, es decir,
+que si preciono muchos clik a una peticion repetidas veces, las peticiones se evaluan como duplicadas y ya no se ejecuta el filtro nuevamente.      
+```

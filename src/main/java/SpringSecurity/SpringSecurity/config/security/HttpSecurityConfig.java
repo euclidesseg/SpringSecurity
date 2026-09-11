@@ -31,6 +31,7 @@ public class HttpSecurityConfig {
                 //==en la línea anterior no necesitamos llamar explícitamente ningún método de SecurityBeansInjector porque Spring Security
                 //== se encarga de inyectar los beans necesarios automáticamente. Al referenciar authenticationProvider(this.authenticationProvider),
                 //== Spring Security buscará un bean de tipo AuthenticationProvider en el contexto de la aplicación y lo utilizará para la autenticación
+                .addFilterBefore()
                 .authorizeHttpRequests(authReqConfig -> {
                     authReqConfig.requestMatchers(HttpMethod.POST, "/customers").permitAll();
                     authReqConfig.requestMatchers(HttpMethod.POST, "/auth/authenticate").permitAll();
