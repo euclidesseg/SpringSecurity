@@ -18,3 +18,5 @@ public class SpringSecurityApplication {
 	// de la aplicación ha sido cargado y antes de que la aplicación comience a funcionar
 
 }
+
+// contraseña correo bitforging KeIoseepyFYPAZ8  bitforging@gmail.com

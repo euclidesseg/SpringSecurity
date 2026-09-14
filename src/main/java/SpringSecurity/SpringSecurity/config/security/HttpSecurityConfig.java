@@ -1,5 +1,6 @@
 package SpringSecurity.SpringSecurity.config.security;
 
+import SpringSecurity.SpringSecurity.config.security.filter.JwtAuthenticationFilter;
 import SpringSecurity.SpringSecurity.interfacesimpl.CustomizeImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 // EnableWebSecurity activa y congigura componentes como el AuthenticationConfiguration
@@ -20,6 +22,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class HttpSecurityConfig {
     @Autowired
     private AuthenticationProvider daoAuthProvider;
+    @Autowired
+    JwtAuthenticationFilter jwtAuthenticationFilter;
     @Bean
     // HttpSecurity permite gestionar y proteger las solicitudes http
     public SecurityFilterChain filterChain (HttpSecurity http) {
@@ -31,7 +35,7 @@ public class HttpSecurityConfig {
                 //==en la línea anterior no necesitamos llamar explícitamente ningún método de SecurityBeansInjector porque Spring Security
                 //== se encarga de inyectar los beans necesarios automáticamente. Al referenciar authenticationProvider(this.authenticationProvider),
                 //== Spring Security buscará un bean de tipo AuthenticationProvider en el contexto de la aplicación y lo utilizará para la autenticación
-                .addFilterBefore()
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authReqConfig -> {
                     authReqConfig.requestMatchers(HttpMethod.POST, "/customers").permitAll();
                     authReqConfig.requestMatchers(HttpMethod.POST, "/auth/authenticate").permitAll();
@@ -44,3 +48,45 @@ public class HttpSecurityConfig {
         return filterChain;
     }
 }
+
+
+//! STATELESS
+//Indica que el tipo de politica de sesion de mi app es una sesion sin estado es decir, no va a manterner un
+// estado de la sesion en el servidor ya que es pr jwt
+
+//!  El orden
+// los filtros en Spring Security son  cruciales para determinar cómo se procesan las solicitudes
+// y se aplica la seguridad. En este caso, la inserción de JwtAuthenticationFilter antes de UsernamePasswordAuthenticationFilter
+// tiene un propósito específico:
+
+//==  1. Priorizar la autenticación JWT:
+//  JwtAuthenticationFilter se encarga de la autenticación basada en tokens JWT.
+//  Al colocarlo antes de UsernamePasswordAuthenticationFilter, se le da prioridad a la aurorizacion JWT.
+//  Si la solicitud contiene un token JWT válido, el usuario será autorizado utilizando el token
+
+//==  2. Optimizar el rendimiento:
+//  Si la solicitud no contiene un token JWT válido o la autorizacion JWT falla,
+//  la solicitud sera bloqueada pro los mecanismos de seguridad yy se lanzará una excepcion con AuthenticationEntryPoint
+
+//== 3. Seguridad
+// El filtro JwtAuthenticationFilter no solo valida el token JWT, sino que también establece
+// el contexto de seguridad con la información del usuario autenticado. Esto es crucial para que las partes
+// posteriores del flujo de la solicitud, como los controladores o servicios, puedan acceder a la identidad del usuario
+// y aplicar las reglas de autorización correspondientes.
+
+//# ¿Qué es UsernamePasswordAuthenticationFilter?
+// UsernamePasswordAuthenticationFilter es un filtro de Spring Security predefinido que maneja la autenticación
+// tradicional basada en nombre de usuario y contraseña.
+
+
+//# Porque se pone jwtAuthenticationFilter antes  de UsernamePasswordAuthenticationFilter
+// Primero que todo todos estos son filtros de spring boot, que se aplican a todas las peticiones
+// y la razon del orden es que jwtAuthenticationFilter restrinje o permite el acceso a enpoints establecidos,
+// y UsernamePasswordAuthenticationFilter actua como un filtro para permitir o denegar el acceso al sistema durante una peticion de logueo o registro,
+// ahora, no se nota, pero el jwtAuthenticationFilter siempre se ejecuta primero que UsernamePasswordAuthenticationFilter incluso en una peticion de logueo o registro
+// solo que va a permmitir el acceso ya que estos epoints son publicos, por tanto el jwtAuthenticationFilter comienza a trabajar más durante las
+// peticiones subsecuentes
+
+
+
+/* Entre mas grande sea el peso del filtro mas tarde se ejecuta el filtro asociado al peso*/
