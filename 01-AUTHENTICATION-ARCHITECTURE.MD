@@ -1,16 +1,45 @@
 # Arquitectura a gran escala
 
 >`https://docs.spring.io/spring-security/reference/servlet/architecture.html`
+## Jakarta Servlet Filter Chain
 
-Spring security se debe incorporar a lo siclos de vida de Jakarta y lo hace a traves del metodo:
+Es la cadena general de filtros del contenedor Jakarta Servlet.
+Permite interceptar y procesar peticiones HTTP antes de llegar al Servlet.
 
-## DelegationFilterProxy (integrar siclos de vida de jakarta servlet y spring boot)
+Spring Security se integra a esta cadena mediante `DelegatingFilterProxy`,
+que delega las peticiones al `FilterChainProxy`.
+
+`FilterChainProxy` coordina las cadenas de seguridad (`SecurityFilterChain`)
+y determina qué filtros de Spring Security se ejecutan y en qué orden.
+
+### Flujo
+
+```text
+Petición HTTP
+    ↓
+Jakarta Servlet Filter Chain
+    ↓
+DelegatingFilterProxy
+    ↓
+FilterChainProxy
+    ↓
+SecurityFilterChain
+    ↓
+Filtros de seguridad
+    ↓
+Controller / API
+```
+
+
+## Spring security se debe incorporar a lo siclos de vida de Jakarta y lo hace a traves del metodo:
+
+## `DelegationFilterProxy` (integrar siclos de vida de jakarta servlet y spring boot)
 > Es un filtro del paquete `Jakarta.servlet`. Se encarga de hacer un puente entre el siclo de vida de Spring Boot y el siclo de vida del contendeor de servlets de Jakarta para que los filtros de seguridad accedan a los recursos de Spring y de Jakarta.
 > Una vez se injecta en la cadena de filtros de Jakarta le delega el trabajo al `FilterChainProxy`.
 
 ---
 
-## FilterChainProxy (coordinar la cadena de filtros de seguridad)
+## `FilterChainProxy` (coordinar la cadena de filtros de seguridad)
 
 > Cordina la o las cadenas de filtros para la seguridad en Spring Security basada en peticiones `GET`, `PUT` o `DELETE`.
 > Indica que filtros se deben ejecutar y en que orden.
@@ -18,7 +47,7 @@ Spring security se debe incorporar a lo siclos de vida de Jakarta y lo hace a tr
 
 ---
 
-## SecurityFilterChain (Contiene los filtros de seguridad representada como una lista)
+## `SecurityFilterChain` (Contiene los filtros de seguridad representada como una lista)
 
 > Es una cadena de filtros, basicamente es una estructura de datos que contiene filtros de seguridad.
 >estos filtros provienen de jakarta.servlet y que fueron vinculados al siclo de vida de spring boot mediante DelegationFilterProxy
@@ -30,75 +59,75 @@ Spring security se debe incorporar a lo siclos de vida de Jakarta y lo hace a tr
 
 ---
 
-# SecurityContextHolder
+# `SecurityContextHolder`
 
 > Es una Clase fundamental en Spring Security quye proporciona una acceso centralizado al contexto de seguridad de una aplicacion.
 > Permite acceder y gestionar la información de autenticacion y aurorizacion asociada con uns solicitud HTTP en el contexto de Seguridad actual.
 
 ---
 
-# SecurityContext
+# `SecurityContext`
 
 > Es una interfaz en Spring Security que representa el contexto de seguridad actual de una solicitud.
 > Contiene toda la informacion relacionada con la autenticacion y autorizacion del usuario que ha realizado la solicitud.
 
 ---
 
-# Principal
+# `Principal`
 
 > Es una representacion del usuario autenticado en el sistema, representa la identidad del usuario.
 > Este objeto encapsula los detalles del usuario como su nombre roles y otra informacion relacionada con la autenticación.
 
 ---
 
-# GrantedAuthority
+# `GrantedAuthority`
 
-### Permiso Concedido
+### `Permiso Concedido`
 
 > Es un permiso que es otorgado al principal (Usuario Logueado) lectura, escritura, eliminacion, actualizacion sobre una entidad en especifico.
 
 ---
 
-# AuthenticationConfiguration y AuthenticationManager
+# `AuthenticationConfiguration y AuthenticationManager`
 
-## AuthenticationConfiguration
+## `AuthenticationConfiguration`
 
 > **Configuración de autenticación:** proporciona el `AuthenticationManager` que Spring Security ha configurado para la aplicación.  
 > Permite obtener o personalizar el `AuthenticationManager` cuando necesitamos una configuración más específica.
 
 ---
 
-## AuthenticationManager
+## `AuthenticationManager`
 
 > **Administrador de autenticaciones:** es la interfaz central que administra el proceso de autenticación y expone el método `authenticate()`.  
 > Recibe un objeto `Authentication` y delega la autenticación al componente encargado de realizarla.
 
 ---
 
-## authenticate
+## `authenticate`
 
 > Es el método de `AuthenticationManager` que recibe un objeto `Authentication` con las credenciales y demás información necesaria para autenticar al usuario.  
 > Si la autenticación es correcta, devuelve un `Authentication` autenticado; si falla, lanza una excepción.
 
 ---
 
-## ProviderManager
+## `ProviderManager`
 
 > **Administrador de proveedores:** es la implementación más común de `AuthenticationManager` y también implementa su método `authenticate()`.  
 > Coordina uno o varios `AuthenticationProvider` y delega la autenticación al proveedor adecuado según el tipo de autenticación.
 
 ---
 
-## AuthenticationProvider
+## `AuthenticationProvider`
 
-### Estrategias de autenticación
+### `Estrategias de autenticación`
 
 > **Proveedor de autenticación:** es una interfaz que define el contrato que debe cumplir un componente capaz de realizar una estrategia concreta de autenticación.  
 > `ProviderManager` utiliza uno o varios `AuthenticationProvider`, por ejemplo para usuario/contraseña, google, facebok, etc.
 
 ---
 
-# Diagrama mental
+# `Diagrama mental`
 
 ```text
 AuthenticationConfiguration
@@ -256,7 +285,7 @@ AuthenticationProvider
               Controller / API
 
 ```
-# JwtAuthenticationFilters
+# `JwtAuthenticationFilters`
 
 ```text
 Es un filtro que tiene la responsabilidad de interceptar una petición, buscar el JWT que viene en ella, validarlo y, 
@@ -264,7 +293,7 @@ si es válido, establecer al usuario autenticado en el contexto de seguridad de 
 para nosotros estaremos usando mas que nada el OncePerRequestFilter
 ```
 
-# OncePerRequestFilter
+# `OncePerRequestFilter`
 ```text
 OncePerRequestFilter es una clase abstracta de spring security que simplifica la creación de filtros personalizados
 para procesar peticiones.

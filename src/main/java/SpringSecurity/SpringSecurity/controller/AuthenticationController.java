@@ -2,6 +2,7 @@ package SpringSecurity.SpringSecurity.controller;
 
 import SpringSecurity.SpringSecurity.dto.auth.AuthenticationRequestDTO;
 import SpringSecurity.SpringSecurity.dto.auth.AuthenticationResponseDTO;
+import SpringSecurity.SpringSecurity.persistance.entity.User;
 import SpringSecurity.SpringSecurity.service.auth.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -26,9 +27,17 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    // responderá con AuthenticationResponse y recibira RequestAuthentication
+    // responderá con AuthenticationResponse y recibirá RequestAuthentication
     public ResponseEntity<AuthenticationResponseDTO> authenticate(@RequestBody @Valid AuthenticationRequestDTO authenticationRequestDTO){
         AuthenticationResponseDTO responseDTO = authenticationService.login(authenticationRequestDTO);
         return  ResponseEntity.ok(responseDTO);
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<User> readMyProfile(){
+        // si llego hasta este enpoint si está loqueado ya que este enpoint está protegido
+        User myUser = this.authenticationService.getLoggedInUser();
+        return ResponseEntity.status(HttpStatus.OK).body(myUser);
+    }
+
 }

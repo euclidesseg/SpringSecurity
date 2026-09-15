@@ -39,6 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return; // retorna el control a quien mando a llamar doFilterInternal
         }
+        // en este punto la negacion de acceso lo maneja AuthenticationEntryPoint el cual invita a que nos logueemos
+        // y el AceesDeniedAndler es logueo con un permiso de acceso
 
         //2. Desde el encabezado(Header) sacar el token
         String jwt = authorizationHeader.split(" ")[1];
@@ -51,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Este objeto representa el usuario logueado está dentro del securityContext y este a su vez dentro del securitycontext holder
         User userDetails = this.userService.findByUsername(username).get();
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
-        authToken.setDetails(new WebAuthenticationDetails(request));
+        authToken.setDetails(new WebAuthenticationDetails(request));// recibe los detalles de la authentication
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         //5. Ejecutar el registro de filtros

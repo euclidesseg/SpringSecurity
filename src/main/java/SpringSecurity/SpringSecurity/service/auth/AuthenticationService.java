@@ -5,6 +5,7 @@ import SpringSecurity.SpringSecurity.dto.auth.AuthenticationRequestDTO;
 import SpringSecurity.SpringSecurity.dto.auth.AuthenticationResponseDTO;
 import SpringSecurity.SpringSecurity.dto.RegisteredUserDTO;
 import SpringSecurity.SpringSecurity.dto.SaveUserDTO;
+import SpringSecurity.SpringSecurity.exception.ObjectNotFoundException;
 import SpringSecurity.SpringSecurity.persistance.entity.User;
 import SpringSecurity.SpringSecurity.service.IUserService;
 import jakarta.validation.Valid;
@@ -93,5 +94,28 @@ public class AuthenticationService {
             System.out.println(e.getMessage());
             return false;
         }
+    }
+
+    public User getLoggedInUser() {
+        UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken)  SecurityContextHolder.getContext().getAuthentication();// obtener el usuario logueado
+        String username = (String) auth.getPrincipal(); // obtengo el principal que como se definio en JwtAuthenticationFilter solo es el nombre de usuario
+        return this.userService.findByUsername(username).orElseThrow(() -> new ObjectNotFoundException("User not found with username" + username));
+
+    }
+
+    //=alternativa al metodo de arriba que se usa en caso de que hallan varios tips de authenticacion
+    public User getMyProfile(String username){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth instanceof UsernamePasswordAuthenticationToken authTocken) {
+            String userAuth = (String) authTocken.getPrincipal();
+            if(username.equals(userAuth)){
+                System.out.println("Sin son iguales");
+                return this.userService.findByUsername(username)
+                        .orElseThrow(() -> new ObjectNotFoundException("User not Found with username" + username));
+            }else{
+                System.out.println("No son iguales");
+            }
+        }
+        return null;
     }
 }
