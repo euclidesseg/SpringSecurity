@@ -33,6 +33,7 @@ public class AuthenticationController {
         return  ResponseEntity.ok(responseDTO);
     }
 
+    // metodo para que un usuario lea su propio perfil
     @GetMapping("/profile")
     public ResponseEntity<User> readMyProfile(){
         // si llego hasta este enpoint si está loqueado ya que este enpoint está protegido
