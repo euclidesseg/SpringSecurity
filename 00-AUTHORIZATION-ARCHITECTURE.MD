@@ -62,3 +62,8 @@ en los diferentes metodos podremos ver las definiciones de estos metodos
 ```text
 Desde nuestra clase HttpSecurityConfig comenzamos a implementar esta autorización
 ```
+
+## `AuthorizationFilter`
+```text
+Al hacer debug se observa que este es el ultimo filtro que se ejecuta en la cadena de filtros
+```
