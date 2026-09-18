@@ -1,7 +1,8 @@
 package SpringSecurity.SpringSecurity.config.security;
 
 import SpringSecurity.SpringSecurity.config.security.filter.JwtAuthenticationFilter;
-import SpringSecurity.SpringSecurity.interfacesimpl.CustomizeImpl;
+import SpringSecurity.SpringSecurity.interfacesimpl.CustomizerImpl;
+import SpringSecurity.SpringSecurity.persistance.util.RolePermission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -27,25 +28,66 @@ public class HttpSecurityConfig {
     @Bean
     // HttpSecurity permite gestionar y proteger las solicitudes http
     public SecurityFilterChain filterChain (HttpSecurity http) {
-        CustomizeImpl customize = new CustomizeImpl();
+        CustomizerImpl customize = new CustomizerImpl();
         SecurityFilterChain filterChain = http
                 .csrf(customize)
                 .sessionManagement(sessMagConfig -> sessMagConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(daoAuthProvider)//Le indica a Spring Security que use daoAuthProvider como proveedor encargado de autenticar las credenciales de los usuarios.
+                .authenticationProvider(this.daoAuthProvider)//Le indica a Spring Security que use daoAuthProvider como proveedor encargado de autenticar las credenciales de los usuarios.
                 //==en la línea anterior no necesitamos llamar explícitamente ningún método de SecurityBeansInjector porque Spring Security
                 //== se encarga de inyectar los beans necesarios automáticamente. Al referenciar authenticationProvider(this.authenticationProvider),
                 //== Spring Security buscará un bean de tipo AuthenticationProvider en el contexto de la aplicación y lo utilizará para la autenticación
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // agrega jwtAuthenticationFilter antes de UsernamePasswordAuthenticationFilter
-                .authorizeHttpRequests(authReqConfig -> {
-                    authReqConfig.requestMatchers(HttpMethod.POST, "/customers").permitAll();
-                    authReqConfig.requestMatchers(HttpMethod.POST, "/auth/authenticate").permitAll();
-                    authReqConfig.requestMatchers(HttpMethod.GET, "/auth/validate").permitAll();
 
-                    authReqConfig.anyRequest().authenticated();
-                }).build();
+                // agrega jwtAuthenticationFilter antes de UsernamePasswordAuthenticationFilter
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
+                // aplica filtros a las peticiones
+
+                .authorizeHttpRequests(HttpSecurityConfig::buildRequestMatchers).build();
 
 
         return filterChain;
+    }
+
+    private static void buildRequestMatchers(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authReqConfig) {
+        /*Autorizacion de enpoints de productos*/
+        authReqConfig.requestMatchers(HttpMethod.GET, "/products")
+                .hasAuthority(RolePermission.READ_ALL_PRODUCTS.name());
+
+        authReqConfig.requestMatchers(HttpMethod.GET, "/products/{productId}")
+                .hasAuthority(RolePermission.READ_ONE_PRODUCT.name());
+
+        authReqConfig.requestMatchers(HttpMethod.POST, "/products")
+                .hasAuthority(RolePermission.CREATE_ONE_PRODUCT.name());
+
+        authReqConfig.requestMatchers(HttpMethod.PUT, "/products/{productId}")
+                .hasAuthority(RolePermission.UPDATE_ONE_PRODUCT.name());
+        authReqConfig.requestMatchers(HttpMethod.PUT, "/products/{" +
+                        "productId}/disabled")
+                .hasAuthority(RolePermission.DISABLE_ONE_PRODUCT.name());
+
+
+        /*Autorizacion de enpoints de categorias*/
+        authReqConfig.requestMatchers(HttpMethod.GET, "/products")
+                .hasAuthority(RolePermission.READ_ALL_CATEGORIES.name());
+
+        authReqConfig.requestMatchers(HttpMethod.GET, "/category")
+                .hasAuthority(RolePermission.READ_ONE_CATEGORY.name());
+
+        authReqConfig.requestMatchers(HttpMethod.POST, "/category/{categoryId}")
+                .hasAuthority(RolePermission.CREATE_ONE_CATEGORY.name());
+
+        authReqConfig.requestMatchers(HttpMethod.PUT, "/category/{categoryId}")
+                .hasAuthority(RolePermission.UPDATE_ONE_CATEGORY.name());
+        authReqConfig.requestMatchers(HttpMethod.PUT, "/category/{categoryId}/disabled")
+                .hasAuthority(RolePermission.DISABLE_ONE_CATEGORY.name());
+
+
+        /*Autorizacion de enpoints públicos*/
+        authReqConfig.requestMatchers(HttpMethod.POST, "/customers").permitAll();
+        authReqConfig.requestMatchers(HttpMethod.POST, "/auth/authenticate").permitAll();
+        authReqConfig.requestMatchers(HttpMethod.GET, "/auth/validate").permitAll();
+
+        authReqConfig.anyRequest().authenticated();
     }
 }
 

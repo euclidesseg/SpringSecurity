@@ -1,4 +1,6 @@
-# `Arquitectura a gran escala de la authorization (a que tengo acceso)`
+>`https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html`
+
+ # `Arquitectura a gran escala de la authorization (a que tengo acceso)`
 ``` txt
 La autenticacion trata sobre como las implementaciones de autenticacion almacenan una lista de 
 objetos GrantedAuthority estos obetos representan las autoridades o permisos
@@ -48,3 +50,15 @@ esto es util para:
 > Aplicar seguridad a la capa de servicio
 
 > La implementación de este tipo de seguridad esta basada en `AOP` o programación orientada a aspectos
+las anotaciones que podemos utilizar aqui son
+>`@PreAuthorize`
+>`@PostFilter`
+>`@PostAuthorize`
+>`@PreAuthorize`
+
+en los diferentes metodos podremos ver las definiciones de estos metodos
+
+### `Autorizacion basada en HtttpServletRequest`
+```text
+Desde nuestra clase HttpSecurityConfig comenzamos a implementar esta autorización
+```
