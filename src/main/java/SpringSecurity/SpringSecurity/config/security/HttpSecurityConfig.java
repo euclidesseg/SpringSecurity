@@ -2,6 +2,7 @@ package SpringSecurity.SpringSecurity.config.security;
 
 import SpringSecurity.SpringSecurity.config.security.filter.JwtAuthenticationFilter;
 import SpringSecurity.SpringSecurity.interfacesimpl.CustomizerImpl;
+import SpringSecurity.SpringSecurity.persistance.util.Role;
 import SpringSecurity.SpringSecurity.persistance.util.RolePermission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configurers.AuthorizeH
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 @Configuration
 // EnableWebSecurity activa y congigura componentes como el AuthenticationConfiguration
@@ -49,37 +51,55 @@ public class HttpSecurityConfig {
     }
 
     private static void buildRequestMatchers(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authReqConfig) {
+
+        /* Estrategia basado en permisos especificos o autrhoritys*/
+        /* Cuando trabajamos con autoridades el AuthorizationManager se llama AuthorityAuthenticationManager*/
+
         /*Autorizacion de enpoints de productos*/
         authReqConfig.requestMatchers(HttpMethod.GET, "/products")
-                .hasAuthority(RolePermission.READ_ALL_PRODUCTS.name());
+                //.hasAuthority(RolePermission.READ_ALL_PRODUCTS.name());
+                .hasAnyRole(Role.ADMINISTRATOR.name(), Role.ASSISTANT_ADMINISTRATOR.name());
+
 
         authReqConfig.requestMatchers(HttpMethod.GET, "/products/{productId}")
-                .hasAuthority(RolePermission.READ_ONE_PRODUCT.name());
+                //.hasAuthority(RolePermission.READ_ONE_PRODUCT.name());
+                .hasAnyRole(Role.ADMINISTRATOR.name(), Role.ASSISTANT_ADMINISTRATOR.name());
 
         authReqConfig.requestMatchers(HttpMethod.POST, "/products")
-                .hasAuthority(RolePermission.CREATE_ONE_PRODUCT.name());
+                //.hasAuthority(RolePermission.CREATE_ONE_PRODUCT.name());
+                .hasRole(Role.ADMINISTRATOR.name());
 
-        authReqConfig.requestMatchers(HttpMethod.PUT, "/products/{productId}")
-                .hasAuthority(RolePermission.UPDATE_ONE_PRODUCT.name());
-        authReqConfig.requestMatchers(HttpMethod.PUT, "/products/{" +
-                        "productId}/disabled")
-                .hasAuthority(RolePermission.DISABLE_ONE_PRODUCT.name());
+        //authReqConfig.requestMatchers(HttpMethod.PUT, "/products/{productId}")
+        authReqConfig.requestMatchers(RegexRequestMatcher.regexMatcher("/products/[0-9]*")) // validación con regex, que reciba cualquier simbolo que valla de 0 a nueve y que se repita n veces
+                //.hasAuthority(RolePermission.UPDATE_ONE_PRODUCT.name());
+                .hasAnyRole(Role.ADMINISTRATOR.name(), Role.ASSISTANT_ADMINISTRATOR.name());
+
+        authReqConfig.requestMatchers(HttpMethod.PUT, "/products/{productId}/disabled")
+                //.hasAuthority(RolePermission.DISABLE_ONE_PRODUCT.name());
+                .hasRole(Role.ADMINISTRATOR.name());
+        authReqConfig.requestMatchers(HttpMethod.GET, "/auth/profile")
+                .hasAnyRole(Role.ADMINISTRATOR.name(), Role.ASSISTANT_ADMINISTRATOR.name(), Role.CUSTOMER.name());
+
 
 
         /*Autorizacion de enpoints de categorias*/
         authReqConfig.requestMatchers(HttpMethod.GET, "/products")
-                .hasAuthority(RolePermission.READ_ALL_CATEGORIES.name());
+                //.hasAuthority(RolePermission.READ_ALL_CATEGORIES.name());
+                .hasAnyRole(Role.ADMINISTRATOR.name(), Role.ASSISTANT_ADMINISTRATOR.name());
 
         authReqConfig.requestMatchers(HttpMethod.GET, "/category")
-                .hasAuthority(RolePermission.READ_ONE_CATEGORY.name());
-
+                //.hasAuthority(RolePermission.READ_ONE_CATEGORY.name());
+                .hasAnyRole(Role.ADMINISTRATOR.name(), Role.ASSISTANT_ADMINISTRATOR.name());
         authReqConfig.requestMatchers(HttpMethod.POST, "/category/{categoryId}")
-                .hasAuthority(RolePermission.CREATE_ONE_CATEGORY.name());
+                //.hasAuthority(RolePermission.CREATE_ONE_CATEGORY.name());
+                .hasRole(Role.ADMINISTRATOR.name());
 
         authReqConfig.requestMatchers(HttpMethod.PUT, "/category/{categoryId}")
-                .hasAuthority(RolePermission.UPDATE_ONE_CATEGORY.name());
+                //.hasAuthority(RolePermission.UPDATE_ONE_CATEGORY.name());
+                .hasAnyRole(Role.ADMINISTRATOR.name(), Role.ASSISTANT_ADMINISTRATOR.name());
         authReqConfig.requestMatchers(HttpMethod.PUT, "/category/{categoryId}/disabled")
-                .hasAuthority(RolePermission.DISABLE_ONE_CATEGORY.name());
+                //.hasAuthority(RolePermission.DISABLE_ONE_CATEGORY.name());
+                .hasRole(Role.ADMINISTRATOR.name());
 
 
         /*Autorizacion de enpoints públicos*/

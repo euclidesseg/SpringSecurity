@@ -72,15 +72,39 @@ public class User implements UserDetails {
         if(role.getPermissions() == null){
             return null;
         }
-        return role.getPermissions().stream()
-                .map(perm -> perm.name())
-                .map(perm -> new SimpleGrantedAuthority(perm)).collect(Collectors.toList());
+        List<SimpleGrantedAuthority> authorityList = this.role.getPermissions()
+                .stream().map(permission ->{
+                    String authority = permission.name();
+                    return new SimpleGrantedAuthority(authority);
+                }).collect(Collectors.toList());
+        authorityList.add(new SimpleGrantedAuthority("ROLE_"+this.role.name()));
+        return authorityList;
+
+        //return role.getPermissions().stream()
+        //        .map(perm -> perm.name())
+        //        .map(perm -> new SimpleGrantedAuthority(perm)).collect(Collectors.toList());
                 //.map(permision -> {
                 //    String permission = permision.name();
                 //    return new SimpleGrantedAuthority(permission);
                 //}).collect(Collectors.toList());
-
     }
+    /*
+     * authorityList.add(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
+     * Se concatena "ROLE_" al crear la GrantedAuthority que representa nuestro rol.
+     * Spring Security almacena tanto roles como permisos dentro de las authorities.
+     * Cuando usamos hasRole("ADMINISTRATOR"), Spring agrega automáticamente el prefijo "ROLE_".
+     * Por lo tanto, hasRole("ADMINISTRATOR") termina comprobando la autoridad "ROLE_ADMINISTRATOR".
+     * Esta autoridad debe existir dentro de las authorities del objeto Authentication.
+     * En cambio, hasAuthority("CREATE_ONE_PRODUCT") busca exactamente esa autoridad, sin agregar "ROLE_".
+     * Por eso podemos tener roles y permisos juntos dentro de la misma lista de authorities.
+     * No debemos definir el enum como ROLE_ADMINISTRATOR si usamos hasRole(),
+     * porque Spring volvería a agregar "ROLE_" y buscaría "ROLE_ROLE_ADMINISTRATOR".
+     * Así, mantenemos ADMINISTRATOR en nuestro enum y lo representamos como ROLE_ADMINISTRATOR en las authorities.
+     * Esto ocurre porque Spring Security realiza la autorización principalmente sobre GrantedAuthority.
+     * Aunque usamos hasRole(), internamente se termina comprobando una authority específica.
+     * Es decir, hasRole("ADMINISTRATOR") no compara directamente el enum Role,
+     * sino que busca la GrantedAuthority "ROLE_ADMINISTRATOR" dentro de Authentication.
+     */
 
     @Override
     public @Nullable String getPassword() {
