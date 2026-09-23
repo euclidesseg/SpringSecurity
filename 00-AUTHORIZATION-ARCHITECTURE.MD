@@ -67,3 +67,21 @@ Desde nuestra clase HttpSecurityConfig comenzamos a implementar esta autorizaci�
 ```text
 Al hacer debug se observa que este es el ultimo filtro que se ejecuta en la cadena de filtros
 ```
+
+## `Aseguración de metodos`
+```text
+Este tipo de autorización consiste en agregar anotaciones como @preAuthorize y @postAuthorize tanto a metodos (controladores, servicios, repositorios) como a las clases que requiramos
+para esto debemos anotar nuestro HttpSecurityConfig con la antacion @EnabledMethodSecurity(prePostEnabled = true) para habilitar dichas anotaciones
+
+
+```
+## Aseguracióon de metodos basados en `Roles`
+```text
+Consiste en agregar a los metodos o clases anotacioens como @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ASSISTANT_ADMINISTRATOR')") 
+
+```
+## Aseguracióon de metodos basados en `Authority`
+```text
+Consiste en agregar a los metodos o clases anotaciones  como// @PreAuthorize("hasAuthority('READ_ALL_PRODUCTS')") // basado en authorities
+```
+

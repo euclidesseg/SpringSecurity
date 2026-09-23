@@ -7,6 +7,7 @@ import SpringSecurity.SpringSecurity.service.auth.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 // Clase para que un usuario pueda realizar una autenticación, logueo o inicio de sesión
@@ -34,6 +35,7 @@ public class AuthenticationController {
     }
 
     // metodo para que un usuario lea su propio perfil
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ASSISTANT_ADMINISTRATOR','CUSTOMER')")
     @GetMapping("/profile")
     public ResponseEntity<User> readMyProfile(){
         // si llego hasta este enpoint si está loqueado ya que este enpoint está protegido

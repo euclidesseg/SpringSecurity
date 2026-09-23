@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
@@ -22,6 +23,7 @@ import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 // que tenemos en SecurityBeansInjector
 // también activa el autenticatorentripoint, Habilita la seguridad basada en coincidencias de url
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true) // Habilita aseguración por metodos, prePostEnabled habilita las anotaciones preAuthorize y postAuthorize
 public class HttpSecurityConfig {
     @Autowired
     private AuthenticationProvider daoAuthProvider;
@@ -44,12 +46,13 @@ public class HttpSecurityConfig {
 
                 // aplica filtros a las peticiones
 
-                .authorizeHttpRequests(HttpSecurityConfig::buildRequestMatchers).build();
+                .authorizeHttpRequests(HttpSecurityConfig::buildRequestMatchersV2).build();
 
 
         return filterChain;
     }
 
+    // Metodo buildRequestMatchers basado en aseguramientos a traves de coincidencias de URL
     private static void buildRequestMatchers(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authReqConfig) {
 
         /* Estrategia basado en permisos especificos o autrhoritys*/
@@ -104,6 +107,19 @@ public class HttpSecurityConfig {
 
         /*Autorizacion de enpoints públicos*/
         authReqConfig.requestMatchers(HttpMethod.POST, "/customers").permitAll();
+        authReqConfig.requestMatchers(HttpMethod.POST, "/auth/authenticate").permitAll();
+        authReqConfig.requestMatchers(HttpMethod.GET, "/auth/validate").permitAll();
+
+        authReqConfig.anyRequest().authenticated();
+    }
+
+    // Método buildRequestMatchersV2 para aseguración a traves de metodos aquí solo se mantienen las url publicas ya que
+    // En los diferentes metodos vamos a agregar nuestras anotaciones
+    private static void buildRequestMatchersV2(	AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authReqConfig) {
+
+
+        /*Autorizacion de enpoints públicos*/
+        authReqConfig.requestMatchers(HttpMethod.POST, "/customers").permitAll(); // se especifica que el POST dentro de customers será público
         authReqConfig.requestMatchers(HttpMethod.POST, "/auth/authenticate").permitAll();
         authReqConfig.requestMatchers(HttpMethod.GET, "/auth/validate").permitAll();
 
