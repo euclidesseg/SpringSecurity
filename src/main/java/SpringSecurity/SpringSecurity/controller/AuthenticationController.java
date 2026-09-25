@@ -21,12 +21,14 @@ public class AuthenticationController {
     }
 
 
+    @PreAuthorize("permitAll")
     @GetMapping("/validate")
     public ResponseEntity<Boolean> validate (@RequestParam String jwt){
         Boolean isTokenValid = authenticationService.validateToken(jwt);
         return ResponseEntity.ok(isTokenValid);
     }
 
+    @PreAuthorize("permitAll")
     @PostMapping("/authenticate")
     // responderá con AuthenticationResponse y recibirá RequestAuthentication
     public ResponseEntity<AuthenticationResponseDTO> authenticate(@RequestBody @Valid AuthenticationRequestDTO authenticationRequestDTO){
@@ -35,7 +37,8 @@ public class AuthenticationController {
     }
 
     // metodo para que un usuario lea su propio perfil
-    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ASSISTANT_ADMINISTRATOR','CUSTOMER')")
+    //@PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ASSISTANT_ADMINISTRATOR','CUSTOMER')")
+    @PreAuthorize("hasAuthority('READ_MY_PROFILE')")
     @GetMapping("/profile")
     public ResponseEntity<User> readMyProfile(){
         // si llego hasta este enpoint si está loqueado ya que este enpoint está protegido

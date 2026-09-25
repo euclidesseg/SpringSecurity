@@ -85,3 +85,14 @@ Consiste en agregar a los metodos o clases anotacioens como @PreAuthorize("hasAn
 Consiste en agregar a los metodos o clases anotaciones  como// @PreAuthorize("hasAuthority('READ_ALL_PRODUCTS')") // basado en authorities
 ```
 
+## Metodos publicos con permitAll o de
+```text
+Consiste en agregar a los metodos que son publicos anotaciones como @preAuthorize(permitAll) o @preAuthorize(denyAll) 
+```
+
+
+
+### Teoría
+```text
+
+```

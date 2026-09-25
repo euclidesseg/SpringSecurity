@@ -42,11 +42,15 @@ public class HttpSecurityConfig {
                 //== Spring Security buscará un bean de tipo AuthenticationProvider en el contexto de la aplicación y lo utilizará para la autenticación
 
                 // agrega jwtAuthenticationFilter antes de UsernamePasswordAuthenticationFilter
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class).build();
 
                 // aplica filtros a las peticiones
 
-                .authorizeHttpRequests(HttpSecurityConfig::buildRequestMatchersV2).build();
+                //.authorizeHttpRequests(HttpSecurityConfig::buildRequestMatchersV2).build();
+                // Ya no se llama a ningun metodo para agregar agregar los endpoints publicos si no que estos se
+                // especifican dentro de cada componente con permitAll
+                /*.authorizeHttpRequests(httpReqConfig ->{
+                }).build();*/
 
 
         return filterChain;
@@ -125,6 +129,7 @@ public class HttpSecurityConfig {
 
         authReqConfig.anyRequest().authenticated();
     }
+
 }
 
 // UsernamePasswordAuthenticationFilter no es necesario para autenticar
