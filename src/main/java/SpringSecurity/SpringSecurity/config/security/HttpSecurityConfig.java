@@ -23,7 +23,7 @@ import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 // que tenemos en SecurityBeansInjector
 // también activa el autenticatorentripoint, Habilita la seguridad basada en coincidencias de url
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) // Habilita aseguración por metodos, prePostEnabled habilita las anotaciones preAuthorize y postAuthorize
+//@EnableMethodSecurity(prePostEnabled = true) // Habilita aseguración por metodos, prePostEnabled habilita las anotaciones preAuthorize y postAuthorize
 public class HttpSecurityConfig {
     @Autowired
     private AuthenticationProvider daoAuthProvider;
@@ -42,15 +42,19 @@ public class HttpSecurityConfig {
                 //== Spring Security buscará un bean de tipo AuthenticationProvider en el contexto de la aplicación y lo utilizará para la autenticación
 
                 // agrega jwtAuthenticationFilter antes de UsernamePasswordAuthenticationFilter
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class).build();
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
                 // aplica filtros a las peticiones
 
                 //.authorizeHttpRequests(HttpSecurityConfig::buildRequestMatchersV2).build();
                 // Ya no se llama a ningun metodo para agregar agregar los endpoints publicos si no que estos se
                 // especifican dentro de cada componente con permitAll
-                /*.authorizeHttpRequests(httpReqConfig ->{
-                }).build();*/
+
+                // esto se puede habiltar y mantener de esta manera cuando vamos a utilizar seguridad basada en coincidencias
+                // http y para manejar las exceptiones de no authenticathed
+                .authorizeHttpRequests(httpReqConfig ->{
+                    buildRequestMatchers(httpReqConfig);
+                }).build();
 
 
         return filterChain;

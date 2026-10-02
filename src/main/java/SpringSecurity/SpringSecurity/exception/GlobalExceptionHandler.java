@@ -4,6 +4,7 @@ import SpringSecurity.SpringSecurity.dto.ApiErrorDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -31,7 +32,25 @@ public class GlobalExceptionHandler {
         apiErrorDTO.setTimeStamp(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiErrorDTO);
     }
-    
+
+    @ExceptionHandler(AccessDeniedException.class)
+    // Manejará las restricciones de acceso, es decir al momento de intentar hacer una peticion si no se tiene acceso a ese recurso o url el controlador retornara esta excepcion
+    // Esta excepcion tiene limitaciones ya que va a retornar denied cuando no estamos autenticados y cuado no estamos autorizados basada en metodos seguros,
+    // entonces para un no authenticado deberia retornar un 401 de not credential
+    public ResponseEntity<?> handlerAccesDeniedException(AccessDeniedException exception, HttpServletRequest request){
+        ApiErrorDTO apiError = new ApiErrorDTO();
+
+        apiError.setBackendMessage(exception.getLocalizedMessage());
+        apiError.setUrl(request.getRequestURL().toString());
+        apiError.setMethod(request.getMethod());
+        apiError.setMessage("Acceso denegado. No tienes permisos necesarios para acceder a esta funcion contacta al administrador si crees que es un error");
+        apiError.setTimeStamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError); // devolvera un 403 error de autorizacion
+        // si no se agrega esta excepcion el error lo manejara el manejador generico y retornara un error 500 cuando deberia
+        // ser 403 http://localhost:4001/api/v1/products ejemplo al intentar entrar a esta ruta sin authorizacion ni
+        // logueo
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
    /* Manejará las excepciones mas especificas como por ejemplo cuando guardamos un producto
