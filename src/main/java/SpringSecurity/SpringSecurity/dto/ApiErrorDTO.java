@@ -1,5 +1,7 @@
 package SpringSecurity.SpringSecurity.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -8,6 +10,7 @@ public class ApiErrorDTO implements Serializable {
 
     private String backendMessage;
     private String message;
+    @JsonFormat(pattern = "yyy/MM/dd :HH:mm:ss")
     private LocalDateTime timeStamp; // representa la hora en la que ocurrió el error
     private String url; // Para la url de la petición en la que ocurrió el error
     private String method; // POST DELETE GET

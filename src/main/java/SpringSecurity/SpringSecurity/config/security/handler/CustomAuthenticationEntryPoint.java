@@ -8,12 +8,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+@Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    private  final ObjectMapper objectMapper;
+    public  CustomAuthenticationEntryPoint(ObjectMapper objectMapper){
+        this.objectMapper = objectMapper;
+    }
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         ApiErrorDTO apiError = new ApiErrorDTO();
@@ -43,12 +50,11 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         // Convierte el objeto ApiError a una cadena JSON gracias a la libreria jaxson
         // la cual debemos agregar a nustro pom
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registeredModules(new JavaTimeModule());
-        String apiErrorAsJson = objectMapper.writeValueAsString(apiError);
-
-        // Escribe la cadena JSON en la respuesta HTTP
+        String apiErrorAsJson = this.objectMapper.writeValueAsString(apiError);
         response.getWriter().write(apiErrorAsJson);
-        //TODO terminar el video numero 53 de udemy
+
+        // Antes, se registraba manualmente JavaTimeModule en ObjectMapper para poder serializar LocalDateTime con Jackson 2.
+        // Actualmente, con Spring Boot 4 y Jackson 3, el soporte para java.time está integrado y ya no es necesario registrar JavaTimeModule manualmente.
+        // Por eso podemos serializar LocalDateTime directamente, aunque es recomendable utilizar el ObjectMapper administrado por Spring en lugar de crear uno con new ObjectMapper().
     }
 }

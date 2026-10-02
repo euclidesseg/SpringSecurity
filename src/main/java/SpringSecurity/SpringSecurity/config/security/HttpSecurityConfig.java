@@ -1,6 +1,7 @@
 package SpringSecurity.SpringSecurity.config.security;
 
 import SpringSecurity.SpringSecurity.config.security.filter.JwtAuthenticationFilter;
+import SpringSecurity.SpringSecurity.config.security.handler.CustomAuthenticationEntryPoint;
 import SpringSecurity.SpringSecurity.interfacesimpl.CustomizerImpl;
 import SpringSecurity.SpringSecurity.persistance.util.Role;
 import SpringSecurity.SpringSecurity.persistance.util.RolePermission;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
@@ -29,6 +31,8 @@ public class HttpSecurityConfig {
     private AuthenticationProvider daoAuthProvider;
     @Autowired
     JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
+    private AuthenticationEntryPoint  authenticationEntryPoint;
     @Bean
     // HttpSecurity permite gestionar y proteger las solicitudes http
     public SecurityFilterChain filterChain (HttpSecurity http) {
@@ -54,6 +58,9 @@ public class HttpSecurityConfig {
                 // http y para manejar las exceptiones de no authenticathed
                 .authorizeHttpRequests(httpReqConfig ->{
                     buildRequestMatchers(httpReqConfig);
+                })
+                .exceptionHandling(exeptionConfig ->{
+                    exeptionConfig.authenticationEntryPoint(authenticationEntryPoint);
                 }).build();
 
 
