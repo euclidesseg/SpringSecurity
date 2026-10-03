@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.configurers.AuthorizeH
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
@@ -33,6 +34,8 @@ public class HttpSecurityConfig {
     JwtAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
     private AuthenticationEntryPoint  authenticationEntryPoint;
+    @Autowired
+    private AccessDeniedHandler accessDeniedHandler;
     @Bean
     // HttpSecurity permite gestionar y proteger las solicitudes http
     public SecurityFilterChain filterChain (HttpSecurity http) {
@@ -59,9 +62,14 @@ public class HttpSecurityConfig {
                 .authorizeHttpRequests(httpReqConfig ->{
                     buildRequestMatchers(httpReqConfig);
                 })
+                // agrego los filtros para los errores de authenticacion y autorización
                 .exceptionHandling(exeptionConfig ->{
                     exeptionConfig.authenticationEntryPoint(authenticationEntryPoint);
-                }).build();
+                })
+                .exceptionHandling(exeptionConfig ->{
+                    exeptionConfig.accessDeniedHandler(accessDeniedHandler);
+                })
+                .build();
 
 
         return filterChain;

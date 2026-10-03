@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     // Manejará las restricciones de acceso, es decir al momento de intentar hacer una peticion si no se tiene acceso a ese recurso o url el controlador retornara esta excepcion
     // Esta excepcion tiene limitaciones ya que va a retornar denied cuando no estamos autenticados y cuado no estamos autorizados basada en metodos seguros,
-    // entonces para un no authenticado deberia retornar un 401 de not credential
+    // entonces para un no authenticado deberia retornar un 401 de not credential este metodo está basado aseguracion de metodos
     public ResponseEntity<?> handlerAccesDeniedException(AccessDeniedException exception, HttpServletRequest request){
         ApiErrorDTO apiError = new ApiErrorDTO();
 

@@ -57,4 +57,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         // Actualmente, con Spring Boot 4 y Jackson 3, el soporte para java.time está integrado y ya no es necesario registrar JavaTimeModule manualmente.
         // Por eso podemos serializar LocalDateTime directamente, aunque es recomendable utilizar el ObjectMapper administrado por Spring en lugar de crear uno con new ObjectMapper().
     }
+
+    /*  cuando se lanza la excepcion utiizando anotaciones ya hemos pasado los filtros de seguridad
+     *  y con coincidencias de http las excepciones se lanzan mienstras se atraviezan los filtros de seguridad?
+     *  por eso se usan estas clases handler
+     */
 }
