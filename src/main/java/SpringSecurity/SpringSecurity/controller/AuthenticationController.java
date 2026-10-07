@@ -2,7 +2,7 @@ package SpringSecurity.SpringSecurity.controller;
 
 import SpringSecurity.SpringSecurity.dto.auth.AuthenticationRequestDTO;
 import SpringSecurity.SpringSecurity.dto.auth.AuthenticationResponseDTO;
-import SpringSecurity.SpringSecurity.persistance.entity.User;
+import SpringSecurity.SpringSecurity.persistance.entity.security.User;
 import SpringSecurity.SpringSecurity.service.auth.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

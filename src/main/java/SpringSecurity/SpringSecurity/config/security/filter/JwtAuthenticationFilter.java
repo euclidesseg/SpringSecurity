@@ -1,12 +1,10 @@
 package SpringSecurity.SpringSecurity.config.security.filter;
 
-import SpringSecurity.SpringSecurity.persistance.entity.User;
+import SpringSecurity.SpringSecurity.persistance.entity.security.User;
 import SpringSecurity.SpringSecurity.service.IUserService;
 import SpringSecurity.SpringSecurity.service.auth.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;

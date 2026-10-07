@@ -1,6 +1,6 @@
-INSERT INTO "user" (username, name, password, role) VALUES ('lmarquez', 'luis márquez', '$2a$10$6Mgh1Gl8V4NOleGyUM5FcOLPwsmW1oQhyoXIVIyiFgliRbHBJzGnu', 'CUSTOMER');
-INSERT INTO "user" (username, name, password, role) VALUES ('fperez', 'fulano pérez', '$2a$10$bGADNi2bLQhxs/lPaRVDYuEuzZJDid4qbzcb/VDq2FNlNjnGbuCni', 'ASSISTANT_ADMINISTRATOR');
-INSERT INTO "user" (username, name, password, role) VALUES ('mhernandez', 'mengano hernández', '$2a$10$TKLhV7BDsf2VimA/GmOgqOnb0pPGeG4taIxwG2vuIdl69W.7BxmRa', 'ADMINISTRATOR');
+INSERT INTO "user" (username, name, password) VALUES ('lmarquez', 'luis márquez', '$2a$10$6Mgh1Gl8V4NOleGyUM5FcOLPwsmW1oQhyoXIVIyiFgliRbHBJzGnu');
+INSERT INTO "user" (username, name, password) VALUES ('fperez', 'fulano pérez', '$2a$10$bGADNi2bLQhxs/lPaRVDYuEuzZJDid4qbzcb/VDq2FNlNjnGbuCni');
+INSERT INTO "user" (username, name, password) VALUES ('mhernandez', 'mengano hernández', '$2a$10$TKLhV7BDsf2VimA/GmOgqOnb0pPGeG4taIxwG2vuIdl69W.7BxmRa');
 
 INSERT INTO category (name, status) VALUES ('Electrónica', 'ENABLED');
 INSERT INTO category (name, status) VALUES ('Ropa', 'ENABLED');

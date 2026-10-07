@@ -1,9 +1,7 @@
 package SpringSecurity.SpringSecurity.service;
 
 import SpringSecurity.SpringSecurity.dto.SaveUserDTO;
-import SpringSecurity.SpringSecurity.persistance.entity.User;
-import jakarta.validation.Valid;
-import org.springframework.stereotype.Service;
+import SpringSecurity.SpringSecurity.persistance.entity.security.User;
 
 import java.util.Optional;
 

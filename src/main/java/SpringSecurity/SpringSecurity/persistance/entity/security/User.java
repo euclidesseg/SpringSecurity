@@ -1,6 +1,5 @@
-package SpringSecurity.SpringSecurity.persistance.entity;
+package SpringSecurity.SpringSecurity.persistance.entity.security;
 
-import SpringSecurity.SpringSecurity.persistance.util.Role;
 import jakarta.persistence.*;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,7 +26,8 @@ public class User implements UserDetails {
 
     private String password;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "role_id")
     private Role role;
 
     //getter y stter de la clase
@@ -69,15 +69,15 @@ public class User implements UserDetails {
         if(role == null){
             return null;
         }
-        if(role.getPermissions() == null){
+        if(role.getGrantedPermissions() == null){
             return null;
         }
-        List<SimpleGrantedAuthority> authorityList = this.role.getPermissions()
+        List<SimpleGrantedAuthority> authorityList = this.role.getGrantedPermissions()
                 .stream().map(permission ->{
-                    String authority = permission.name();
+                    String authority = permission.getOperation().getName();
                     return new SimpleGrantedAuthority(authority);
                 }).collect(Collectors.toList());
-        authorityList.add(new SimpleGrantedAuthority("ROLE_"+this.role.name()));
+        authorityList.add(new SimpleGrantedAuthority("ROLE_"+this.role.getName()));
         return authorityList;
 
         //return role.getPermissions().stream()

@@ -11,3 +11,15 @@ y por ultimo la tabla modulo.
 └──────────┘ ───► └──────────┘ ───► └────────────┘ ───► └────────────┘ ───► └──────────┘
 
 ```
+
+## Que hacemos?
+`1:`
+```text 
+Modificamos los nombres de los enums para no tener problemas
+```
+`2:`
+```text 
+    Creamos en entidades el package security donde vamos a agregar nuestra entidad usuario
+    y luego vamos a definir primero la tabla Role a a traves de una clase
+    de esta manera modelamos las tablas Role RolePermission, User, Operation y Modulo a traves de entidades
+```

@@ -3,7 +3,7 @@ package SpringSecurity.SpringSecurity.controller;
 
 import SpringSecurity.SpringSecurity.dto.RegisteredUserDTO;
 import SpringSecurity.SpringSecurity.dto.SaveUserDTO;
-import SpringSecurity.SpringSecurity.persistance.entity.User;
+import SpringSecurity.SpringSecurity.persistance.entity.security.User;
 import SpringSecurity.SpringSecurity.service.auth.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
