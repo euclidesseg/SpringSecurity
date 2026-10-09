@@ -15,7 +15,7 @@ public class RoleService implements IRoleService {
     @Autowired
     private IRoleRepository iRoleRepository;
 
-    @Value("${security.default.role}")// obtengo una propiedad desde mi arcchivo de propiedades
+    @Value("${security.default.role}")// obtengo una propiedad desde mi archivo de propiedades
     private String defaultRole;
 
     @Override
