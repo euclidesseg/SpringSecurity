@@ -23,3 +23,9 @@ Modificamos los nombres de los enums para no tener problemas
     y luego vamos a definir primero la tabla Role a a traves de una clase
     de esta manera modelamos las tablas Role RolePermission, User, Operation y Modulo a traves de entidades
 ```
+`2:`
+```text 
+   en nuestro HttpSecurityConfig ponermos .authorizeHttpRequests(authReqConfig -> authReqConfig.anyRequest().access(myAuthorizationManager))
+   esde debido que vamos a crear un authorization manager que vamos a crear personalizado desde base de datos.
+   
+```

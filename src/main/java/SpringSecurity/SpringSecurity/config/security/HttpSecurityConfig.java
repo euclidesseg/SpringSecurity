@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
@@ -15,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
@@ -33,6 +35,9 @@ public class HttpSecurityConfig {
     private AuthenticationEntryPoint  authenticationEntryPoint;
     @Autowired
     private AccessDeniedHandler accessDeniedHandler;
+
+    @Autowired
+    private AuthorizationManager<RequestAuthorizationContext> myAuthorizationManager;
     @Bean
     // HttpSecurity permite gestionar y proteger las solicitudes http
     public SecurityFilterChain filterChain (HttpSecurity http) {
@@ -57,7 +62,7 @@ public class HttpSecurityConfig {
                 // esto se puede habiltar y mantener de esta manera cuando vamos a utilizar seguridad basada en coincidencias
                 // http y para manejar las exceptiones de no authenticathed
                 .authorizeHttpRequests(httpReqConfig ->{
-                    buildRequestMatchers(httpReqConfig);
+                    httpReqConfig.anyRequest().access(myAuthorizationManager);
                 })
                 // agrego los filtros para los errores de authenticacion y autorización
                 .exceptionHandling(exeptionConfig ->{
