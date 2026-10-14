@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface IOperationRepository extends JpaRepository<Operation, Long> {
 
     @Query("SELECT o FROM Operation o where o.permit_all = true") // obtiene u na lista de operaciones cuando la columna permite_all = true
-    List<Operation> findByPublicAcces();
+    List<Operation> findByPublicAccess();
 
-    Optional<Operation> findByName(String name);}
+    Optional<Operation> findByName(String name);
+}

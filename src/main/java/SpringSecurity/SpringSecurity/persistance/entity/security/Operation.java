@@ -12,7 +12,7 @@ public class Operation {
     private String name; // Ej: READ_ALL_PRODUCTS
     private String path; // Ej. /{productId}/disabled  el path base estaría en el modulo y sera /products
     private String http_method;
-    private boolean permitAll;
+    private boolean permit_all;
 
     @ManyToOne
     // muchas operaciones estarán relacionadas a un mismo modulo
@@ -43,11 +43,11 @@ public class Operation {
         return module;
     }
     public boolean isPermit_all() {
-        return permitAll;
+        return  this.permit_all;
     }
 
-    public void setPermit_all(boolean permitAll) {
-        this.permitAll = permitAll;
+    public void setPermit_all(boolean permit_all) {
+        this.permit_all = permit_all;
     }
 
     public void setModule(Module module) {
@@ -60,5 +60,5 @@ public class Operation {
         this.http_method = http_method;
     }
 
-    //=== los paths dependen de cada modulo como
+    //=== los paths dependen de cada modulo como como category /products
 }

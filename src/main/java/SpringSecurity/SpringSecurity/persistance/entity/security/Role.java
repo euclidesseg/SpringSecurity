@@ -1,5 +1,6 @@
 package SpringSecurity.SpringSecurity.persistance.entity.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -14,8 +15,11 @@ public class Role {
 
     private String name;
 
-    @OneToMany(mappedBy = "role")
+    @JsonIgnore // para que no serialize infinitamente
+    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)
     // relacion uno a muchos lo que indica que un rol va a tener muchos permisos asociados
+    //fetch = FetchType.EAGER hará que me traiga todo incluso los grantedPermissions
+    // esto se hace porque en las relaciones OneToMany no se optienen todas las relaciones por defecto como en ManyToOne
     private List<GrantedPermission>  grantedPermissions;
 
     public List<GrantedPermission> getGrantedPermissions() {
