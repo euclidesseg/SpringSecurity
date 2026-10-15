@@ -6,8 +6,11 @@ import SpringSecurity.SpringSecurity.dto.auth.AuthenticationResponseDTO;
 import SpringSecurity.SpringSecurity.dto.RegisteredUserDTO;
 import SpringSecurity.SpringSecurity.dto.SaveUserDTO;
 import SpringSecurity.SpringSecurity.exception.ObjectNotFoundException;
+import SpringSecurity.SpringSecurity.persistance.entity.security.JwtToken;
 import SpringSecurity.SpringSecurity.persistance.entity.security.User;
+import SpringSecurity.SpringSecurity.persistance.repository.security.IJwtTokenRepository;
 import SpringSecurity.SpringSecurity.service.IUserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,9 +19,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class AuthenticationService {
@@ -30,13 +35,18 @@ public class AuthenticationService {
     }
 
     @Autowired
-    JwtService jwtService;
+    private JwtService jwtService;
     @Autowired
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private IJwtTokenRepository iJwtTokenRepository;
     public RegisteredUserDTO registerOneCustomer(@Valid SaveUserDTO saveUserDTO) {
 
         User user = userService.createOneCustomer(saveUserDTO);
+        String jwt = jwtService.generateToken(user, generateExtraClaims(user));
+        saveUserToken(user, jwt);
+
         RegisteredUserDTO registeredUserDTO = new RegisteredUserDTO();
 
         registeredUserDTO.setId(user.getId());
@@ -44,7 +54,6 @@ public class AuthenticationService {
         registeredUserDTO.setUsername(user.getUsername());
         registeredUserDTO.setRole(user.getRole().getName());
 
-        String jwt = jwtService.generateToken(user, generateExtraClaims(user));
         System.out.println("JWT " + jwt);
         registeredUserDTO.setJwt(jwt);
         return registeredUserDTO;
@@ -77,12 +86,23 @@ public class AuthenticationService {
 
        UserDetails user =  userService.findByUsername(authenticationRequestDTO.getUsername()).get();
        String jwt = jwtService.generateToken(user, generateExtraClaims((User) user));
+       saveUserToken((User)user, jwt);
 
        AuthenticationResponseDTO authResPDTO = new AuthenticationResponseDTO();
        authResPDTO.setJwt(jwt);
        return authResPDTO;
     }
 
+
+    // Metodo para crear un token en base de datos usado al momento de login y de creación de un usuario;
+    private void saveUserToken(User user, String jwt) {
+        JwtToken token = new JwtToken();
+        token.setToken(jwt);
+        token.setUser(user);
+        token.setExpiration(this.jwtService.extractExpirationDate(jwt));
+        token.setValid(true);
+        this.iJwtTokenRepository.save(token);
+    }
     public Boolean validateToken(String jwt) {
         /* Podemos extraer cualquier claim del jwt lo importante es que se extraiga y se valide ese json,
         *  su firma y fecha de expiración
@@ -96,6 +116,7 @@ public class AuthenticationService {
         }
     }
 
+    // obtener el usuario logueado
     public User getLoggedInUser() {
         UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken)  SecurityContextHolder.getContext().getAuthentication();// obtener el usuario logueado
         String username = (String) auth.getPrincipal(); // obtengo el principal que como se definio en JwtAuthenticationFilter solo es el nombre de usuario
@@ -103,7 +124,7 @@ public class AuthenticationService {
 
     }
 
-    //=alternativa al metodo de arriba que se usa en caso de que hallan varios tips de authenticacion
+    // alternativa al metodo de arriba que se usa en caso de que hallan varios tips de authenticacion
     public User getMyProfile(String username){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth instanceof UsernamePasswordAuthenticationToken authTocken) {
@@ -117,5 +138,16 @@ public class AuthenticationService {
             }
         }
         return null;
+    }
+
+    public void logout(HttpServletRequest httpServletRequest) {
+        String jwt = this.jwtService.extractJwtFromRequest(httpServletRequest);
+        if(jwt == null || !StringUtils.hasText(jwt)) return;
+
+        Optional<JwtToken> token = iJwtTokenRepository.findByToken(jwt); // buscar el token en db para invalidarlo con invalid false.
+        if(token.isPresent() && token.get().isValid()){
+            token.get().setValid(false);
+            iJwtTokenRepository.save(token.get());
+        }
     }
 }

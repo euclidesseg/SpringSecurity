@@ -1,9 +1,11 @@
 package SpringSecurity.SpringSecurity.controller;
 
+import SpringSecurity.SpringSecurity.dto.LogoutResponseDTO;
 import SpringSecurity.SpringSecurity.dto.auth.AuthenticationRequestDTO;
 import SpringSecurity.SpringSecurity.dto.auth.AuthenticationResponseDTO;
 import SpringSecurity.SpringSecurity.persistance.entity.security.User;
 import SpringSecurity.SpringSecurity.service.auth.AuthenticationService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,4 +48,11 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatus.OK).body(myUser);
     }
 
+
+    // existe tambien una clase para hacer logout llamada LogoutHandler que es un filtro de spring
+    @PostMapping("/logout")
+    public  ResponseEntity<LogoutResponseDTO> logOut(HttpServletRequest httpServletRequest){
+        authenticationService.logout(httpServletRequest);
+        return ResponseEntity.ok(new LogoutResponseDTO("Logout exitoso"));
+    }
 }

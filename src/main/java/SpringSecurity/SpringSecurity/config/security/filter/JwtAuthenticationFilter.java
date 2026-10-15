@@ -1,6 +1,8 @@
 package SpringSecurity.SpringSecurity.config.security.filter;
 
+import SpringSecurity.SpringSecurity.persistance.entity.security.JwtToken;
 import SpringSecurity.SpringSecurity.persistance.entity.security.User;
+import SpringSecurity.SpringSecurity.persistance.repository.security.IJwtTokenRepository;
 import SpringSecurity.SpringSecurity.service.IUserService;
 import SpringSecurity.SpringSecurity.service.auth.JwtService;
 import jakarta.servlet.FilterChain;
@@ -16,6 +18,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.Optional;
 
 // este es un filtro de seguridad llamado filtro de authenticacion que se injecta a mi cadena de filtros la cual se genera en HttpSecurityConfig
 @Component
@@ -24,28 +28,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private IUserService userService;
     @Autowired
     private JwtService jwtService;
+    @Autowired
+    private IJwtTokenRepository iJwtTokenRepository;
 
     //filterChain es la cadena de filtros de jakarta
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        //1. Obtener encabezado(header) http llamado autorization
-        //   Se verifica si el encabezado Authorization existe y comienza con "Bearer ".
-        //   Si no es así, la cadena de filtros continúa sin procesar el token JWT.
-        System.out.println("Entró en el filtro jwt");
-        String authorizationHeader =  request.getHeader("Authorization"); //Bearer jwt
-        if(!StringUtils.hasText(authorizationHeader) || !authorizationHeader.startsWith("Bearer ")){ // == Verificar si el token de autorización existe y comienza con "Bearer "
-            filterChain.doFilter(request, response);
-            return; // retorna el control a quien mando a llamar doFilterInternal
-        }
-        // en este punto la negacion de acceso lo maneja AuthenticationEntryPoint el cual invita a que nos logueemos
-        // y el AceesDeniedAndler es logueo con un permiso de acceso
+        System.out.println("Entró en filtro Jwt Authentication Filter");
+        //ver en este metodo los pasos 1 y 2 para Obtener authorization header y Obtener token
+        String jwt = this.jwtService.extractJwtFromRequest(request);
 
-        //2. Desde el encabezado(Header) sacar el token
-        String jwt = authorizationHeader.split(" ")[1];
+        if (jwt == null || !StringUtils.hasText(jwt)){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        //2.1 Obtener token no expirado y valido desde base de datos
+        Optional<JwtToken> token = iJwtTokenRepository.findByToken(jwt);
+        boolean isValid = validateToken(token);
+        if (!isValid){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
 
         //3. Obtener el subject/username desde el token
         // Esta accion a su vez valida el formato del token firma y fecha de expiración
         String username = jwtService.extractUsername(jwt);
-
+        
         //4. Setear el objeto authentication dentro de securit cotnext Holder
         // Este objeto representa el usuario logueado está dentro del securityContext y este a su vez dentro del securitycontext holder
         User userDetails = this.userService.findByUsername(username).get();
@@ -55,6 +64,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         //5. Ejecutar el registro de filtros
         filterChain.doFilter(request, response);
+    }
+
+    //Metodo para validar el token que viene de base de datos
+    private boolean validateToken(Optional<JwtToken> optionalToken) {
+        if(!optionalToken.isPresent()){
+            System.out.println("Token no existente");
+            return false;
+        }
+        JwtToken token = optionalToken.get();
+        Date now = new Date(System.currentTimeMillis());
+        boolean isValid = token.isValid() && token.getExpiration().after(now); // si la fecha de expiración esta despues de la fecha actual
+        if(!isValid){
+            System.out.println("Token no valido");
+            updateTokenStatus(token);
+        }
+        return isValid;
+    }
+    private void updateTokenStatus(JwtToken token) {
+        token.setValid(false);
+        this.iJwtTokenRepository.save(token);
     }
 }
 

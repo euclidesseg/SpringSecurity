@@ -5,9 +5,11 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -63,6 +65,29 @@ public class JwtService {
     }
     private Claims extractAllClaims(String jwt){
         return Jwts.parser().verifyWith(generateKey()).build().parseSignedClaims(jwt).getPayload(); //parseSignedClaims me indica que es un jwt firmado
+    }
+
+    public String extractJwtFromRequest(HttpServletRequest request) {
+
+        //1. Obtener encabezado(header) http llamado autorization
+        //   Se verifica si el encabezado Authorization existe y comienza con "Bearer ".
+        //   Si no es así, la cadena de filtros continúa sin procesar el token JWT.
+        System.out.println("Entró en el filtro jwt");
+        String authorizationHeader =  request.getHeader("Authorization"); //Bearer jwt
+        // == Verificar si el token de autorización existe y comienza con "Bearer "
+        if(!StringUtils.hasText(authorizationHeader) || !authorizationHeader.startsWith("Bearer ")){
+            return null;
+        }
+        // en este punto la negacion de acceso lo maneja AuthenticationEntryPoint el cual invita a que nos logueemos
+        // y el AceesDeniedAndler es logueo con un permiso de acceso
+
+        //2. Desde el encabezado(Header) sacar el token
+        String jwt = authorizationHeader.split(" ")[1];
+        return jwt;
+    }
+
+    public  Date extractExpirationDate(String jwt){
+        return extractAllClaims(jwt).getExpiration();
     }
 }
 // # Los Claims son las afirmaciones o declaraciones que se incluyen en el
