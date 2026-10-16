@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class LogoutResponseDTO implements Serializable {
     private String message;
 
-    public LogoutResponse(String message){
+    public LogoutResponseDTO(String message){
         this.message = message;
     }
 

@@ -95,6 +95,8 @@ public class AuthenticationService {
 
 
     // Metodo para crear un token en base de datos usado al momento de login y de creación de un usuario;
+    // gracias a esto tambien podemos hacer un login único al iniciar sesion en otra computadora marcamos todos los tokens que esten
+    // validos como invalidos, o dos clients deskop y movile
     private void saveUserToken(User user, String jwt) {
         JwtToken token = new JwtToken();
         token.setToken(jwt);

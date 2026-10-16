@@ -28,12 +28,14 @@ INSERT INTO operation (name, path, http_method, permit_all, module_id) VALUES ('
 INSERT INTO operation (name, path, http_method, permit_all, module_id) VALUES ('AUTHENTICATE','/authenticate', 'POST', true, 4);
 INSERT INTO operation (name, path, http_method, permit_all, module_id) VALUES ('VALIDATE-TOKEN','/validate-token', 'GET', true, 4);
 INSERT INTO operation (name, path, http_method, permit_all, module_id) VALUES ('READ_MY_PROFILE','/profile','GET', false, 4);  --15
+INSERT INTO operation(name, path, http_method, permit_all, module_id) VALUES ('LOGOUT','/logout', 'GET', true, 4);--20
 
 -- PERMISSIONS
 INSERT INTO operation(name, path, http_method, permit_all, module_id) VALUES ('READ_ALL_PERMISSIONS','', 'GET', false, 5); --16
 INSERT INTO operation(name, path, http_method, permit_all, module_id) VALUES ('READ_ONE_PERMISSION','/{permissionId}', 'GET', false, 5);--17
 INSERT INTO operation(name, path, http_method, permit_all, module_id) VALUES ('CREATE_ONE_PERMISSION','', 'POST', false, 5);--18
 INSERT INTO operation(name, path, http_method, permit_all, module_id) VALUES ('DELETE_ONE_PERMISSION','', 'DELETE', false, 5);--19
+
 
 
 
@@ -68,10 +70,10 @@ INSERT INTO granted_permission (role_id, operation_id) VALUES (3, 8);
 INSERT INTO granted_permission (role_id, operation_id) VALUES (3, 9);
 INSERT INTO granted_permission (role_id, operation_id) VALUES (3, 10);
 INSERT INTO granted_permission (role_id, operation_id) VALUES (3, 15);
-INSERT INTO granted_permission (role_id, operation_id) VALUES (3, 16);
 INSERT INTO granted_permission (role_id, operation_id) VALUES (3, 17);
 INSERT INTO granted_permission (role_id, operation_id) VALUES (3, 18);
 INSERT INTO granted_permission (role_id, operation_id) VALUES (3, 19);
+INSERT INTO granted_permission (role_id, operation_id) VALUES (3, 20);
 
 
 
