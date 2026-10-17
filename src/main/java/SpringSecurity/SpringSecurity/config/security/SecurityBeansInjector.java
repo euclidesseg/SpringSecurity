@@ -53,6 +53,8 @@ public class SecurityBeansInjector {
             return userRepository.findByUsername(username).orElseThrow(() -> new ObjectNotFoundException("Username not fount with user " + username));
         };
     }
+
+
 }
 
 

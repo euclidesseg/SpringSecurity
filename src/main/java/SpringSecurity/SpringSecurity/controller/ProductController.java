@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+//@CrossOrigin
 @RestController
 @RequestMapping("/products") // ruta base
 public class ProductController {
@@ -46,9 +47,9 @@ public class ProductController {
     }
 
 
+    //@CrossOrigin(originPatterns = "https://www.google.com") // permite unicamente desde el dominio de google
     //@PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ASSISTANT_ADMINISTRATOR')")
     @PreAuthorize("hasAuthority('READ_ONE_PRODUCT')")
-
     @GetMapping("/{productId}")
     public ResponseEntity<Product> findOneById(@PathVariable Long productId){
         Optional<Product> product = productService.findOneById(productId);

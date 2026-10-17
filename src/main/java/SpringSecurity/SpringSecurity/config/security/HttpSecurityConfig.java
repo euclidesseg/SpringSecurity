@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authorization.AuthorizationManager;
+import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
@@ -19,6 +20,11 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+
 
 @Configuration
 // EnableWebSecurity activa y congigura componentes como el AuthenticationConfiguration
@@ -38,11 +44,12 @@ public class HttpSecurityConfig {
 
     @Autowired
     private AuthorizationManager<RequestAuthorizationContext> myAuthorizationManager;
-    @Bean
     // HttpSecurity permite gestionar y proteger las solicitudes http
+    @Bean
     public SecurityFilterChain filterChain (HttpSecurity http) {
         CustomizerImpl customize = new CustomizerImpl();
         SecurityFilterChain filterChain = http
+                .cors(withDefaults()) //CorsFilter
                 .csrf(customize)
                 .sessionManagement(sessMagConfig -> sessMagConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(this.daoAuthProvider)//Le indica a Spring Security que use daoAuthProvider como proveedor encargado de autenticar las credenciales de los usuarios.
@@ -75,6 +82,21 @@ public class HttpSecurityConfig {
 
 
         return filterChain;
+    }
+    @Bean
+        // Define la configuración global de CORS.
+    UrlBasedCorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(
+            Arrays.asList( "https://www.google.com","http://127.0.0.1:5500")// Define los orígenes permitidos.
+        );
+        configuration.setAllowedMethods(Arrays.asList("*")); // Permite todos los métodos HTTP.
+        configuration.setAllowedHeaders(Arrays.asList("*")); // Permite todas las cabeceras HTTP.
+        configuration.setAllowCredentials(true); // Permite enviar cookies y credenciales.
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); // Crea la fuente de configuración.
+        source.registerCorsConfiguration("/**", configuration); // Aplica la configuración a todas las rutas.
+        return source; // Retorna la configuración de CORS.
     }
 
     // Metodo buildRequestMatchers basado en aseguramientos a traves de coincidencias de URL
