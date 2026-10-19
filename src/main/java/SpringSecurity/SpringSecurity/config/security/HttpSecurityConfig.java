@@ -49,7 +49,7 @@ public class HttpSecurityConfig {
     public SecurityFilterChain filterChain (HttpSecurity http) {
         CustomizerImpl customize = new CustomizerImpl();
         SecurityFilterChain filterChain = http
-                .cors(withDefaults()) //CorsFilter
+                .cors(withDefaults()) //CorsFilter este defaul hace que spring inyecte el bean configurado
                 .csrf(customize)
                 .sessionManagement(sessMagConfig -> sessMagConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(this.daoAuthProvider)//Le indica a Spring Security que use daoAuthProvider como proveedor encargado de autenticar las credenciales de los usuarios.
@@ -88,7 +88,7 @@ public class HttpSecurityConfig {
     UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(
-            Arrays.asList( "https://www.google.com","http://127.0.0.1:5500")// Define los orígenes permitidos.
+            Arrays.asList( "https://www.google.com","http://127.0.0.1:5500")// Define los orígenes permitidos.// asi se permite todos los origenes Arrays.asList("*")
         );
         configuration.setAllowedMethods(Arrays.asList("*")); // Permite todos los métodos HTTP.
         configuration.setAllowedHeaders(Arrays.asList("*")); // Permite todas las cabeceras HTTP.

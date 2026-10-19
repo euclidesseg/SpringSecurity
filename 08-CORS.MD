@@ -88,3 +88,7 @@ En esta ocación vamos a configurar un cors que afecte a todos los controladores
 Para realizar esta configuración debemos agregar un beean en HttpSecurityConfig  
 
 ```
+`UrlBasedCorsConfigurationSource`
+```text
+este bena establece las configuraciones de orignes y de cabceras que se pueden enviar en la petición
+```

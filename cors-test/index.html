@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pruebas - Spring Security</title>
+    <link rel="stylesheet" href="./index.css">
+    <script src="./index.js" defer></script>
+</head>
+
+<body>
+    <header class="page-header">
+        <h1>Pruebas</h1>
+        <p>Master en Spring Security, JWT y OAuth2</p>
+    </header>
+
+    <main class="dashboard">
+
+        <!-- Panel izquierdo: formularios -->
+        <section class="left-panel">
+
+            <article class="panel form-panel">
+                <div class="panel-heading">
+                    <h2>Login</h2>
+                    <p>Inicia sesión para obtener tu JWT.</p>
+                </div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginUsername">Usuario</label>
+                        <input type="text" id="loginUsername" name="username" placeholder="Ej. mhernandez"
+                            autocomplete="username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Contraseña</label>
+                        <input type="password" id="loginPassword" name="password" placeholder="Introduce tu contraseña"
+                            autocomplete="current-password" required>
+                    </div>
+
+                    <button type="submit" id="login">
+                        Iniciar sesión
+                    </button>
+                </form>
+            </article>
+
+            <article class="panel form-panel">
+                <div class="panel-heading">
+                    <h2>Registrar usuario</h2>
+                    <p>Completa los datos para crear una cuenta.</p>
+                </div>
+
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="registerName">Nombre completo</label>
+                        <input type="text" id="registerName" name="name" placeholder="Ej. Pepito Perez"
+                            autocomplete="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerUsername">Usuario</label>
+                        <input type="text" id="registerUsername" name="username" placeholder="Ej. pepito2"
+                            autocomplete="username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerPassword">Contraseña</label>
+                        <input type="password" id="registerPassword" name="password"
+                            placeholder="Introduce una contraseña" autocomplete="new-password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="repeatedPassword">Repetir contraseña</label>
+                        <input type="password" id="repeatedPassword" name="repeatedPassword"
+                            placeholder="Repite la contraseña" autocomplete="new-password" required>
+                    </div>
+
+                    <button type="submit" id="register">
+                        Registrar usuario
+                    </button>
+                </form>
+            </article>
+
+            <article class="panel form-panel">
+                <div class="panel-heading">
+                    <h2>Consultar productos</h2>
+                    <p>Obtiene los primeros cinco productos de la API.</p>
+                </div>
+
+                <button type="button" id="findProducts">
+                    Obtener productos
+                </button>
+            </article>
+
+            <!-- Consultar un producto por ID -->
+            <article class="panel form-panel">
+                <div class="panel-heading">
+                    <h2>Consultar producto por ID</h2>
+                    <p>Introduce el identificador del producto que deseas consultar.</p>
+                </div>
+
+                <form id="findProductForm">
+                    <div class="form-group">
+                        <label for="productId">ID del producto</label>
+                        <input type="number" id="productId" name="productId" min="1" step="1" placeholder="Ej. 10"
+                            required>
+                    </div>
+
+                    <button type="submit" id="findProduct">
+                        Buscar producto
+                    </button>
+                </form>
+            </article>
+
+        </section>
+
+        <!-- Panel derecho: respuestas del servidor y JWT -->
+        <section class="right-panel">
+
+            <article class="panel response-panel">
+                <div class="panel-heading heading-with-action">
+                    <div>
+                        <h2>Respuesta del servidor</h2>
+                        <p>Resultado de la última petición HTTP.</p>
+                    </div>
+
+                    <button type="button" class="button-secondary" id="copyResponse">
+                        Copiar JSON
+                    </button>
+                </div>
+
+                <pre id="serverResponse" class="output output-json">Aquí aparecerá la respuesta del servidor...</pre>
+            </article>
+
+            <article class="panel jwt-panel">
+                <div class="panel-heading heading-with-action">
+                    <div>
+                        <h2>Token JWT</h2>
+                        <p>Token recibido durante el login o registro.</p>
+                    </div>
+
+                    <button type="button" class="button-secondary" id="copyJwt">
+                        Copiar JWT
+                    </button>
+                </div>
+
+                <textarea id="jwt" class="output output-jwt" placeholder="El JWT aparecerá aquí..." spellcheck="false"
+                    aria-label="Token JWT"></textarea>
+            </article>
+
+            <p id="statusMessage" class="status-message" role="status" aria-live="polite"></p>
+
+        </section>
+
+    </main>
+</body>
+
+</html>
