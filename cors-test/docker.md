@@ -23,13 +23,14 @@
      se ejecuta aislado del sistema operativo del host
      
     - `docker pull postgres`: descarga la imagen de PostgreSQL.
-    - `docker run <nombre-imagen>`: crea e inicia un contenedor a partir de una imagen.
+    - `docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres`: crea e inicia un contenedor a partir de una imagen.
     - `docker ps`: muestra los contenedores que están ejecutándose.
     - `docker stop <Id de contenedor>`: detiene un contenedor en ejecución.
     - `docker rm <id de contenedor>`: elimina un contenedor detenido.
     - `docker images`: muestra las imágenes descargadas en el sistema.
     - `docker exec -it <id de contenedor> <comando>`: ejecuta un comando dentro de un contenedor en ejecución.
     - `docker logs <id de contenedor>`: muestra los registros de salida de un contenedor.
+    - `docker volume create <nombre_del_volumen>`: Crea un volume en docker.
     
 8. Crear e iniciar un contenedor de PostgreSQL:
    > `docker run --name mi-postgres -e POSTGRES_PASSWORD=mi_contraseña -p 5433:5432 -d postgres`
@@ -40,7 +41,7 @@
    - `-d`: ejecuta en segundo plano.
    - `postgres` al final indica la imagen a partir de la cual Docker creará el contenedor
 
-9. Acceder a PostgreSQL desde la terminal del contenedor:
+9. Acceder a un contenedor PostgreSQL desde la terminal:
    > `docker exec -it mi-postgres psql -U postgres`
 
    - `docker exec -it`: ejecuta un comando dentro del contenedor.
@@ -52,3 +53,12 @@
    - `\q`: salir de `psql`.
    - `CREATE DATABASE mi_base_datos;`: crear una base de datos.
    - `DROP DATABASE mi_base_datos;`: eliminar una base de datos.
+
+9. Volumenes:
+```text
+   Un volumen es un mecanismo de almacenamiento que permite conservar datos fuera del ciclo de vida de un contenedor. Esto significa que los datos pueden mantenerse aunque el contenedor se detenga, se elimine o se cree uno nuevo.
+```
+> `Un volumen en docker no esta asociado exclusivamente a un contenedor`
+
+- `docker volume create <nombre_del_volumen>`: Crea un volume en docker.
+- `docker run --name mi-postgre-with-volume -d -e POSTGRES_PASSWORD=mi_contraseña -v postgres-data:/var/lib/postgresql postgres`:Crea un contenedor asociado y le asigna un voluman.
