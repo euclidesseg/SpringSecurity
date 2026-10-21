@@ -60,6 +60,14 @@ public class MyAuthorizationManager implements AuthorizationManager<RequestAutho
     // recorrerlas para encontrar si alguna coincide con dicha url y si es pública
     private boolean isPublic(String url, String method) {
         List<Operation> publicAccessEndPints = operationRepository.findByPublicAccess();
+        publicAccessEndPints.forEach(operation -> {
+            System.out.println("OPERACIÓN: " + operation.getName());
+            System.out.println("MÓDULO: "
+                    + operation.getModule().getBase_path());
+            System.out.println("PATH: " + operation.getPath());
+            System.out.println("MÉTODO: " + operation.getHttp_method());
+            System.out.println("URL RECIBIDA: " + url);
+        });
         boolean isPublic = publicAccessEndPints.stream().anyMatch( getPermissionStatus(url, method));
 
         System.out.println("IS PUBLIC?" + isPublic);
