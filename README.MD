@@ -49,3 +49,4 @@ Diseñar y crear **arquitecturas de seguridad híbridas**, combinando diferentes
 - 🔐 **Spring Security 6**
 - 🎟️ **JWT**
 - 🔄 **OAuth2**
+- .\mvnw.cmd spring-boot:run ejecuta la aplicacion

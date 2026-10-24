@@ -106,3 +106,9 @@ Verificar que el contenedor esté en ejecución y que aparezca un mapeo de puert
 Pulsar **Save** y desplegar:
 
 > **Nota:** Si un contenedor PostgreSQL tiene un volumen correctamente configurado, los cambios realizados desde pgAdmin, como crear bases de datos, tablas o insertar registros, también se almacenarán en ese volumen. Esto permite conservar los datos aunque se elimine el contenedor y se cree uno nuevo utilizando el mismo volumen y la ruta de almacenamiento correcta.
+
+12. Comunicación entre puertos internos y externos de Docker
+
+- `-p PUERTO_EXTERNO:PUERTO_INTERNO`: Permite acceder desde Windows a un servicio que escucha dentro del contenedor.
+- Ejemplo: `-p 5433:5432` permite acceder a PostgreSQL desde Windows por el puerto `5433`, mientras PostgreSQL escucha en el puerto `5432` del contenedor.
+- de esta manera las peticiones que llegan por windows a traves de 5433 son transmitidas por postgres al 5432 y devuelve una respuesta
