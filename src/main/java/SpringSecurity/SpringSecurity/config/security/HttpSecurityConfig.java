@@ -6,6 +6,7 @@ import SpringSecurity.SpringSecurity.persistance.util.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authorization.AuthorizationManager;
@@ -83,12 +84,31 @@ public class HttpSecurityConfig {
 
         return filterChain;
     }
+
+    @Profile({"local", "dev"})
     @Bean
         // Define la configuración global de CORS.
-    UrlBasedCorsConfigurationSource corsConfigurationSource() {
+    UrlBasedCorsConfigurationSource defaultCorsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(
             Arrays.asList( "https://www.google.com","http://127.0.0.1:5500")// Define los orígenes permitidos.// asi se permite todos los origenes Arrays.asList("*")
+        );
+        configuration.setAllowedMethods(Arrays.asList("*")); // Permite todos los métodos HTTP.
+        configuration.setAllowedHeaders(Arrays.asList("*")); // Permite todas las cabeceras HTTP.
+        configuration.setAllowCredentials(true); // Permite enviar cookies y credenciales.
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); // Crea la fuente de configuración.
+        source.registerCorsConfiguration("/**", configuration); // Aplica la configuración a todas las rutas.
+        return source; // Retorna la configuración de CORS.
+    }
+
+    @Profile("docker")
+    @Bean
+        // Define la configuración global de CORS.
+    UrlBasedCorsConfigurationSource dockerCorsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(
+                Arrays.asList( "http://client")// Define el origen de la app a traves del DNS client
         );
         configuration.setAllowedMethods(Arrays.asList("*")); // Permite todos los métodos HTTP.
         configuration.setAllowedHeaders(Arrays.asList("*")); // Permite todas las cabeceras HTTP.

@@ -1,0 +1,44 @@
+
+# Usa postgres/example como usuario/contraseña
+services:
+  db:
+    #indica el nombre de la imagen, si no esta descargada la va a descargar y obtendra la ultima version estable
+    image: postgres
+    restart: always
+    ports:
+      - 5433:5432
+    shm_size: 128mb
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    environment:
+      POSTGRES_PASSWORD: my_password
+      POSTGRES_DB: securitydb
+    container_name: my-postgres-docker-compose
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d securitydb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  securityapp:
+    ## se requiere buil ya que este cliente no tiene una imagen creada
+    build: .
+    image: securityapp:v1.3
+    ports:
+      - 8585:4001
+    container_name: securityapp-docker-compose
+    depends_on:
+      db:
+        condition: service_healthy
+
+  ## Servicio cliente cnsultara enpoints de securityapp
+  client:
+    image: securityapp-client:v1
+    ports:
+      - 8484:8080
+    container_name: securityapp-client-compose
+    depends_on:
+      - securityapp
+volumes:
+  postgres-data:
